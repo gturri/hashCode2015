@@ -9,7 +9,7 @@ namespace HashCode
     public class ServerInSlot
     {
         public Server Server { get; private set; }
-        public int Group { get; private set; }
+        public int Group { get; set; }
         public int IdxRow { get; private set; }
         public int IdxCol { get; private set; }
 
