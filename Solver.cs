@@ -45,20 +45,23 @@ namespace HashCode
                 bool serverIsSloted = false;
 
                 // try : remove all servers where capacity/size < 10
-                if (server.Size > 5 || server.Capacity < 20)
+                if ((server.Size == 5 && server.Capacity < 50 )
+                    || (server.Size == 4 && server.Capacity < 20)
+                    )
+                    //|| server.Capacity < 15)
                 {
+                    unslotted++;
+                    capaLost += server.Capacity;
                     slotedServers.Add(new ServerInSlot(server, -1, -1, -1));
-                    Console.WriteLine("server ignored");
+                    Console.WriteLine("ignored server of size {0} with capa {1}", server.Size, server.Capacity);
                     continue;
                 }
                 // end try
 
                 // find an empty slot for this servers
-				//for (int j = 0; j < problem.NbSlotsPerRows - server.Size; j++)
-                    for (int i = 0; i < problem.NbRows; i++)
+				for (int j = 0; j < problem.NbSlotsPerRows - server.Size; j++)
                 {
-                    //for (int i = 0; i < problem.NbRows; i++)
-                    for (int j = 0; j < problem.NbSlotsPerRows - server.Size; j++)
+                    for (int i = 0; i < problem.NbRows; i++)
                     {
                         if (serverIsSloted)
                             continue;
@@ -121,7 +124,7 @@ namespace HashCode
 			for (int i = 0; i < groupCapas.Length; i++)
 			{
 				var item = groupCapas [i];
-				Console.WriteLine ("g{0}\t{1}", i, item);
+				//Console.WriteLine ("g{0}\t{1}", i, item);
 			}
 			Console.WriteLine ("smallest:{0}", groupCapas.Min());
 			Console.WriteLine ("biggest:{0}", groupCapas.Max());
