@@ -44,10 +44,21 @@ namespace HashCode
             {
                 bool serverIsSloted = false;
 
-                // find an empty slot for this servers
-				for (int j = 0; j < problem.NbSlotsPerRows - server.Size; j++)
+                // try : remove all servers where capacity/size < 10
+                if (server.Size > 5 || server.Capacity < 20)
                 {
+                    slotedServers.Add(new ServerInSlot(server, -1, -1, -1));
+                    Console.WriteLine("server ignored");
+                    continue;
+                }
+                // end try
+
+                // find an empty slot for this servers
+				//for (int j = 0; j < problem.NbSlotsPerRows - server.Size; j++)
                     for (int i = 0; i < problem.NbRows; i++)
+                {
+                    //for (int i = 0; i < problem.NbRows; i++)
+                    for (int j = 0; j < problem.NbSlotsPerRows - server.Size; j++)
                     {
                         if (serverIsSloted)
                             continue;
@@ -92,7 +103,7 @@ namespace HashCode
 
 
             Console.WriteLine("Step 2");
-            // Step 2 : servers are now in place.Now assign groups to maximize availability
+            // Step 2 : servers are now in place. Now assign groups to maximize availability
             // easy solution : round robin
 			var groupCapas = new int[problem.NbGroupsToBuild];
             int group = 0;
@@ -114,7 +125,6 @@ namespace HashCode
 			}
 			Console.WriteLine ("smallest:{0}", groupCapas.Min());
 			Console.WriteLine ("biggest:{0}", groupCapas.Max());
-
             Console.WriteLine("Done !");
             return slotedServers;
         }
