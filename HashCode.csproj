@@ -38,6 +38,7 @@
     <Compile Include="Problem.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scorer.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="ServerInSlot.cs" />
     <Compile Include="Slot.cs" />
