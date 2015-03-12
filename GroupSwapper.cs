@@ -41,6 +41,39 @@ namespace HashCode
             }
         }
 
+        public void Run2()
+        {
+            var currentSolution = new List<ServerInSlot>(_initialSolution);
+            while (true)
+            {
+                int worstGroup = _scorer.GetPoolIdxWithLowestCapacity(currentSolution);
+                int bestGroup = _scorer.GetPoolIdxWithBestCapacity(currentSolution);
+                int randomServerFromBestGroup = GetRandomFromBest(currentSolution, bestGroup);
+                currentSolution[randomServerFromBestGroup].Group = worstGroup;
+
+                int newScore = _scorer.ComputeScore(currentSolution);
+                Console.WriteLine("Score is: " + newScore + ", best so far: " + _bestScore);
+                if (newScore > _bestScore)
+                {
+                    _bestScore = newScore;
+                    Dumper.Dump(currentSolution);
+                }
+            }
+        }
+
+        private int GetRandomFromBest(List<ServerInSlot> solution, int groupIdx)
+        {
+            List<int> serversInBest = new List<int>();
+            for (int i = 0; i < solution.Count; i++)
+            {
+                if (solution[i].Group == groupIdx)
+                {
+                    serversInBest.Add(i);
+                }
+            }
+            return serversInBest[_random.Next(0, serversInBest.Count)];
+        }
+
         private void Swap(List<ServerInSlot> currentSolution)
         {
             throw new NotImplementedException();

@@ -37,11 +37,78 @@ namespace HashCode
         public int ComputeScore(List<ServerInSlot> solution)
         {
             int score = int.MaxValue;
-            for (int unavailableRowIdx = 0; unavailableRowIdx < _problem.NbRows; unavailableRowIdx++)
+         //   for (int unavailableRowIdx = 0; unavailableRowIdx < _problem.NbRows; unavailableRowIdx++)
+         //   {
+         //       score = Math.Min(score, ComputeScore(solution, unavailableRowIdx));
+         //   }
+            for (int groupId = 0; groupId < _problem.NbGroupsToBuild; groupId ++)
             {
-                score = Math.Min(score, ComputeScore(solution, unavailableRowIdx));
+                score = Math.Min(score, ComputeGroupCapacity(groupId, solution));
             }
-            return score;
+                return score;
+        }
+
+        public int GetPoolIdxWithLowestCapacity(List<ServerInSlot> solution)
+        {
+            int minCapacity = int.MaxValue;
+            int idxWorstGroup = -1;
+
+            for (int groupIdx = 0; groupIdx < _problem.NbGroupsToBuild; groupIdx++)
+            {
+                int groupReservedCapacity = ComputeGroupCapacity(groupIdx, solution);
+                if (minCapacity > groupReservedCapacity)
+                {
+                    minCapacity = groupReservedCapacity;
+                    idxWorstGroup = groupIdx;
+                }
+            }
+
+            if (idxWorstGroup == -1)
+            {
+                throw new Exception("Shouldn't return -1");
+            }
+            return idxWorstGroup;
+        }
+
+        public int GetPoolIdxWithBestCapacity(List<ServerInSlot> solution)
+        {
+            int maxCapacity = int.MinValue;
+            int idxBestGroup = -1;
+
+            for (int groupIdx = 0; groupIdx < _problem.NbGroupsToBuild; groupIdx++)
+            {
+                int groupReservedCapacity = ComputeGroupCapacity(groupIdx, solution);
+                if (maxCapacity < groupReservedCapacity)
+                {
+                    maxCapacity = groupReservedCapacity;
+                    idxBestGroup = groupIdx;
+                }
+            }
+
+            if (idxBestGroup == -1)
+            {
+                throw new Exception("Shouldn't return -1");
+            }
+            return idxBestGroup;
+        }
+
+        private int ComputeGroupCapacity(int groupIdx, List<ServerInSlot> solution)
+        {
+            int worstRowScore = int.MaxValue;
+            for (int idxRow = 0; idxRow < _problem.NbRows; idxRow++)
+            {
+                int score = 0;
+                for (int s = 0; s < solution.Count; s++)
+                {
+                    var server = solution[s];
+                    if (server.IdxRow != idxRow && server.Group == groupIdx)
+                    {
+                        score += server.Server.Capacity;
+                    }
+                }
+                worstRowScore = Math.Min(worstRowScore, score);
+            }
+            return worstRowScore;
         }
 
         private int ComputeScore(List<ServerInSlot> solution, int unavailableRowIdx)

@@ -14,7 +14,7 @@ namespace HashCode
 
 	        var solver = new Solver(problemStatement);
             var solution = solver.Solve();
-	        new GroupSwapper(new Scorer(problemStatement), solution, problemStatement.NbGroupsToBuild).Run();
+	        new GroupSwapper(new Scorer(problemStatement), solution, problemStatement.NbGroupsToBuild).Run2();
 
 
 
