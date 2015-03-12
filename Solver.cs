@@ -32,6 +32,8 @@ namespace HashCode
             // Step 2 : set servers in groups to optimize capacity
             // -------------
 
+            
+            Console.WriteLine("Step 1");
             // Step 1 : place each servers in an available slot
             // todo : fill to balance over every row ! not fill rows first like its done now. (req !)
             // todo : randomize foreach, evaluate solution and submit the best one (good optimize approach)
@@ -67,6 +69,7 @@ namespace HashCode
                             for (int k = 0; k < server.Size; k++) // set the space as unavailable in the dc
                                 dataCenter[i,j + k] = false;
                             serverIsSloted = true;
+                            Console.WriteLine("Server solted");
                         }
                     }
                 }
@@ -84,6 +87,7 @@ namespace HashCode
 				if (b) remaining++;
 			Console.WriteLine (remaining + " slots remaining in dc");
 
+            Console.WriteLine("Step 2");
             // Step 2 : servers are now in place.Now assign groups to maximize availability
             // easy solution : round robin
             int group = 0;
@@ -93,7 +97,7 @@ namespace HashCode
                 group++;
             }
 
-            // Done !
+            Console.WriteLine("Done !");
             return slotedServers;
         }
     }

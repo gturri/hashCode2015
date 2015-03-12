@@ -13,10 +13,11 @@ namespace HashCode
 	        var problemStatement = new Problem();
 
 	        var solver = new Solver(problemStatement);
-            solver.Solve();
-          
-                        
+            var solution = solver.Solve();
 
+
+            Dumper.Dump(solution);
+	        Console.ReadKey();
 
 
 
