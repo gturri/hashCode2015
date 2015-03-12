@@ -9,8 +9,10 @@ namespace HashCode
     {
         public int IdxRow { get; private set; }
         public int IdxCol { get; private set; }
+        public bool IsFilled { get; private set; }
 
-        public Slot(int idxRow, int idxCol)
+
+        public Slot(int idxRow, int idxCol, bool IsFilled)
         {
             
         }

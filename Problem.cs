@@ -13,7 +13,6 @@ namespace HashCode
         public int NbGroupsToBuild { get; private set; }
 
         public IList<Server> Servers { get; private set; }
-        public
 
         public Problem(int nbRows, int slotsPerRows, int nbSlotsUnavailable, int nbGroupsToBuild, IList<Server> servers)
         {
