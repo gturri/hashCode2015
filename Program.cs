@@ -11,7 +11,6 @@ namespace HashCode
 	    {
             // Read the file to get the problem parameters
 	        var problemStatement = new Problem();
-	        problemStatement.Init();
 
 	        var solver = new Solver(problemStatement);
             solver.Solve();
