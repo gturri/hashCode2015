@@ -47,7 +47,7 @@ namespace HashCode
                 // find an empty slot for this servers
 				for (int j = 0; j < problem.NbSlotsPerRows - server.Size; j++)
                 {
-					for (int i = 0; i < problem.NbRows; i++)
+                    for (int i = 0; i < problem.NbRows; i++)
                     {
                         if (serverIsSloted)
                             continue;
@@ -79,6 +79,7 @@ namespace HashCode
 					Console.WriteLine ("cannot slot server of size {0} with capa {1}", server.Size, server.Capacity);
 					unslotted++;
 					capaLost += server.Capacity;
+                    slotedServers.Add(new ServerInSlot(server, -1, -1, -1));
 				}
             }
 			Console.WriteLine ("{0} servers left behind, for a capa of {1}", unslotted, capaLost);
@@ -87,12 +88,18 @@ namespace HashCode
 				if (b) remaining++;
 			Console.WriteLine (remaining + " slots remaining in dc");
 
+
+
+
             Console.WriteLine("Step 2");
             // Step 2 : servers are now in place.Now assign groups to maximize availability
             // easy solution : round robin
             int group = 0;
             foreach (var serverInSlot in slotedServers)
             {
+                if (serverInSlot.IdxCol == -1)
+                    continue;
+
                 serverInSlot.Group = group % problem.NbGroupsToBuild;
                 group++;
             }
