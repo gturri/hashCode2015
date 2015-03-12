@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Linq;
 
 namespace HashCode
 {
@@ -69,6 +70,10 @@ namespace HashCode
                 counter++;
                 Servers.Add(server);
             }
+
+			//no order = loose 4784 capa
+			//2376 with order by throuput
+			Servers = Servers.OrderByDescending (s => s.Capacity/s.Size).ToList();
         }
 
         public bool IsSlotAvailable(int idxRow, int idxCol)
