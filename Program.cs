@@ -14,12 +14,14 @@ namespace HashCode
 
 	        var solver = new Solver(problemStatement);
             var solution = solver.Solve();
-
+/*
+	        var scorer = new Scorer(problemStatement);
+	        scorer.ComputeScore(solution);*/
 
             Dumper.Dump(solution);
 	        Console.ReadKey();
 
-
+           
 
 	    }
 
