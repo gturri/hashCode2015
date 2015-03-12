@@ -22,7 +22,7 @@ namespace HashCode
         {
             // fill dataCenter with empty and unavailable slots
             for (int i = 0; i < problem.NbRows; i++)
-                for (int j = 0; j < problem.SlotsPerRows; j++)
+                for (int j = 0; j < problem.NbSlotsPerRows; j++)
                     dataCenter[i][j] = problem.IsSlotAvailable(i, j) ? new Slot(i, j, false) : new Slot(i, j, true);
 
 
