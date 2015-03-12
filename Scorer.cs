@@ -5,7 +5,7 @@ using System.Text;
 
 namespace HashCode
 {
-    class Scorer
+    public class Scorer
     {
         private readonly Problem _problem;
 

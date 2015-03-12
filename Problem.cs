@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 
 namespace HashCode
 {
-    class Problem
+    public class Problem
     {
         public int NbRows { get; private set; }
         public int NbSlotsPerRows { get; private set; }
