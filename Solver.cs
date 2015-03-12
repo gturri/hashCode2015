@@ -9,7 +9,7 @@ namespace HashCode
     {
         private readonly Problem problem;
         private readonly bool[,] dataCenter; // matrix representing sloting in dc : true means available, false filled
-        private readonly List<ServerInSlot> slotedServer = new List<ServerInSlot>(); 
+        private readonly List<ServerInSlot> slotedServers = new List<ServerInSlot>(); 
 
 
         public Solver(Problem problemStatement)
@@ -23,7 +23,7 @@ namespace HashCode
         }
 
 
-        public void Solve()
+        public List<ServerInSlot> Solve()
         {
             // -------------
             // Strategy
@@ -36,6 +36,8 @@ namespace HashCode
             // todo : fill to balance over every row ! not fill rows first like its done now. (req !)
             // todo : randomize foreach, evaluate solution and submit the best one (good optimize approach)
             // todo : do not iterate over the whole matrix everytime (if time)
+			int unslotted = 0;
+			int capaLost = 0;
             foreach (var server in problem.Servers)
             {
                 bool serverIsSloted = false;
@@ -61,23 +63,45 @@ namespace HashCode
                         }
                         if (slotable) // the slot is available !
                         {
-                            slotedServer.Add(new ServerInSlot(server, -1, i, j)); // add our server in the "done" list
+                            slotedServers.Add(new ServerInSlot(server, -1, i, j)); // add our server in the "done" list
                             for (int k = 0; k < server.Size; k++) // set the space as unavailable in the dc
                                 dataCenter[i,j + k] = false;
                             serverIsSloted = true;
                         }
                     }
                 }
+
+				if (!serverIsSloted)
+				{
+					Console.WriteLine ("cannot slot server of size {0} with capa {1}", server.Size, server.Capacity);
+					unslotted++;
+					capaLost += server.Capacity;
+				}
+            }
+			Console.WriteLine ("{0} servers left behind, for a capa of {1}", unslotted, capaLost);
+			int remaining = 0;
+			foreach (var b in dataCenter)
+				if (b) remaining++;
+			Console.WriteLine (remaining + " slots remaining in dc");
+
+            // Step 2 : servers are now in place.Now assign groups to maximize availability
+            // easy solution : round robin
+            int group = 0;
+            foreach (var serverInSlot in slotedServers)
+            {
+                serverInSlot.Group = group % problem.NbGroupsToBuild;
+                group++;
             }
 
-            // Step 2 : servers are now in place. We will now assign groups to maximize availability
-            
-
-
-
-
-
-
+            // Done !
+            return slotedServers;
         }
     }
+   /* public class ServerCapacityComparer : IComparer<ServerInSlot>
+    {
+        public int Compare(ServerInSlot x, ServerInSlot y)
+        {
+            return x.Server.Capacity.CompareTo(y.Server.Capacity);
+        }
+    }*/
 }
