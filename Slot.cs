@@ -12,7 +12,8 @@ namespace HashCode
 
         public Slot(int idxRow, int idxCol)
         {
-            
+            IdxRow = idxRow;
+            IdxCol = idxCol;
         }
     }
 }
