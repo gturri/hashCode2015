@@ -2,3 +2,6 @@ bin/
 obj/
 *~
 *.userprefs
+packages
+*.user
+*.suo
