@@ -9,7 +9,7 @@ namespace HashCode
     class Problem
     {
         public int NbRows { get; private set; }
-        public int SlotsPerRows { get; private set; }
+        public int NbSlotsPerRows { get; private set; }
         public int NbSlotsUnavailable { get; private set; }
         public int NbGroupsToBuild { get; private set; }
 
@@ -31,7 +31,7 @@ namespace HashCode
 
             //TODO
             NbRows = int.Parse(firstLine[0]);
-            SlotsPerRows = int.Parse(firstLine[1]);
+            NbSlotsPerRows = int.Parse(firstLine[1]);
             NbSlotsUnavailable = int.Parse(firstLine[2]);
             NbGroupsToBuild = int.Parse(firstLine[3]);
             NbServers = int.Parse(firstLine[4]);
@@ -46,7 +46,7 @@ namespace HashCode
             for (int idxRow = 0; idxRow < NbRows; idxRow++)
             {
                 SlotsAvailable.Add(new List<bool>());
-                for (int idxCol = 0; idxCol < SlotsPerRows; idxCol++)
+                for (int idxCol = 0; idxCol < NbSlotsPerRows; idxCol++)
                 {
                     SlotsAvailable[idxRow].Add(true);
                 }
@@ -73,6 +73,21 @@ namespace HashCode
         public bool IsSlotAvailable(int idxRow, int idxCol)
         {
             return SlotsAvailable[idxRow][idxCol];
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < NbRows; i++)
+            {
+                for (int j = 0; j < NbSlotsPerRows; j++)
+                {
+                    char c = IsSlotAvailable(i, j) ? '-' : 'x';
+                    sb.Append(c);
+                }
+                sb.AppendLine();
+            }
+            return sb.ToString();
         }
     }
 }
