@@ -6,21 +6,25 @@ using System.Text;
 
 namespace HashCode
 {
-    class ServerInSlot
+    public class ServerInSlot
     {
-        private Server server;
-        private int group;
-        private int IdxRow;
-        private int IdxCol;
+        public Server Server { get; private set; }
+        public int Group { get; private set; }
+        public int IdxRow { get; private set; }
+        public int IdxCol { get; private set; }
 
         public ServerInSlot(Server serv, int groupId, int row, int col)
         {
-            server = serv;
-            group = groupId;
+            Server = serv;
+            Group = groupId;
             IdxRow = row;
             IdxCol = col;
         }
 
 
+        public string ToSolutionString()
+        {
+            return IdxRow + " " + IdxCol + " " + Group;
+        }
     }
 }

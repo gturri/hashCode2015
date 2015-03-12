@@ -5,7 +5,7 @@ using System.Text;
 
 namespace HashCode
 {
-    class Server
+    public class Server
     {
         public int Capacity { get; private set; }
         public int Size { get; private set; }
