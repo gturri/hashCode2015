@@ -37,6 +37,7 @@ namespace HashCode
             // todo : randomize foreach, evaluate solution and submit the best one (good optimize approach)
             // todo : do not iterate over the whole matrix everytime (if time)
 			int unslotted = 0;
+			int capaLost = 0;
             foreach (var server in problem.Servers)
             {
                 bool serverIsSloted = false;
@@ -74,9 +75,14 @@ namespace HashCode
 				{
 					Console.WriteLine ("cannot slot server of size {0} with capa {1}", server.Size, server.Capacity);
 					unslotted++;
+					capaLost += server.Capacity;
 				}
             }
-			Console.WriteLine (unslotted + " servers left behind");
+			Console.WriteLine ("{0} servers left behind, for a capa of {1}", unslotted, capaLost);
+			int remaining = 0;
+			foreach (var b in dataCenter)
+				if (b) remaining++;
+			Console.WriteLine (remaining + " slots remaining in dc");
 
             // Step 2 : servers are now in place.Now assign groups to maximize availability
             // easy solution : round robin
