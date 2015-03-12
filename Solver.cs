@@ -50,9 +50,10 @@ namespace HashCode
 
                         // check that the next [sizeofserver] slots are empty
                         bool slotable = true;
+                     
                         for (int k = 0; k < server.Size; k++)
                         {
-                            if (!dataCenter[i,j + k]) // cannot slot here
+                            if (j + k >= problem.NbSlotsPerRows || !dataCenter[i, j + k]) // cannot slot here
                             {
                                 slotable = false;
                                 break;
@@ -65,13 +66,13 @@ namespace HashCode
                                 dataCenter[i,j + k] = false;
                             serverIsSloted = true;
                         }
-
                     }
                 }
             }
 
             // Step 2 : servers are now in place. We will now assign groups to maximize availability
             
+
 
 
 
