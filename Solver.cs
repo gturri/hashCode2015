@@ -8,7 +8,7 @@ namespace HashCode
     class Solver
     {
         private readonly Problem problem;
-        private readonly List<List<Slot>> dataCenter = new List<List<Slot>>();
+        private readonly List<List<bool>> dataCenter = new List<List<bool>>(); // matrix representing sloting in dc : true means available, false filled
         private readonly List<ServerInSlot> slotedServer = new List<ServerInSlot>(); 
 
 
@@ -23,7 +23,7 @@ namespace HashCode
             // fill dataCenter with empty and unavailable slots
             for (int i = 0; i < problem.NbRows; i++)
                 for (int j = 0; j < problem.NbSlotsPerRows; j++)
-                    dataCenter[i][j] = problem.IsSlotAvailable(i, j) ? new Slot(i, j, false) : new Slot(i, j, true);
+                    dataCenter[i][j] = problem.IsSlotAvailable(i, j);
 
 
 
@@ -34,20 +34,40 @@ namespace HashCode
 
 
             // Step 1 : place each servers in an available slot
+            // todo : fill to balance over every row ! not fill rows first like its done now. (req !)
+            // todo : do not iterate over the whole matrix everytime (if time)
             foreach (var server in problem.Servers)
             {
-                int serverRow = -1;
-                int serverCol = -1;
+                bool serverIsSloted = false;
 
-                // find an empty slot
-                foreach (var nbRow in dataCenter)
+                // find an empty slot for this servers
+                for (int i = 0; i < problem.NbRows; i++)
                 {
-                    
-                }
+                    for (int j = 0; j < problem.NbSlotsPerRows; j++)
+                    {
+                        if (serverIsSloted)
+                            continue;
 
-                // update dc status
-                // update server status
-                slotedServer.Add(new ServerInSlot(server, -1, serverRow, serverCol));
+                        // check that the next [sizeofserver] slots are empty
+                        bool slotable = true;
+                        for (int k = 0; k < server.Size; k++)
+                        {
+                            if (!dataCenter[i][j + k]) // cannot slot here
+                            {
+                                slotable = false;
+                                break;
+                            }
+                        }
+                        if (slotable) // the slot is available !
+                        {
+                            slotedServer.Add(new ServerInSlot(server, -1, i, j)); // add our server in the "done" list
+                            for (int k = 0; k < server.Size; k++) // set the space as unavailable in the dc
+                                dataCenter[i][j + k] = false;
+                            serverIsSloted = true;
+                        }
+
+                    }
+                }
             }
 
             // Step 2 : servers are now in place. We will now select groups to maximize availability
