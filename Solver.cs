@@ -9,7 +9,7 @@ namespace HashCode
     {
         private readonly Problem problem;
         private readonly bool[,] dataCenter; // matrix representing sloting in dc : true means available, false filled
-        private readonly List<ServerInSlot> slotedServers = new List<ServerInSlot>(); 
+        private List<ServerInSlot> slotedServers = new List<ServerInSlot>(); 
 
 
         public Solver(Problem problemStatement)
@@ -45,10 +45,9 @@ namespace HashCode
                 bool serverIsSloted = false;
 
                 // try : remove all servers where capacity/size < 10
-                if ((server.Size == 5 && server.Capacity < 50 )
-                    || (server.Size == 4 && server.Capacity < 20)
-                    )
-                    //|| server.Capacity < 15)
+                if ((server.Size == 5 && server.Capacity < 40 )
+                 || (server.Size == 4 && server.Capacity < 20)
+                     || server.Capacity < 15)
                 {
                     unslotted++;
                     capaLost += server.Capacity;
@@ -103,7 +102,56 @@ namespace HashCode
 			Console.WriteLine (remaining + " slots remaining in dc");
 
 
+            var newSlotedServers = new List<ServerInSlot>(); 
+            foreach (var slotedServer in slotedServers)
+            {
+                if (slotedServer.IdxCol == -1) // not sloted
+                {
+                    bool serverIsSloted = false;
+                    // find an empty slot for this servers
+                    for (int j = 0; j < problem.NbSlotsPerRows - slotedServer.Server.Size; j++)
+                    {
+                        for (int i = 0; i < problem.NbRows; i++)
+                        {
+                            if (serverIsSloted)
+                                continue;
 
+                            // check that the next [sizeofserver] slots are empty
+                            bool slotable = true;
+
+                            for (int k = 0; k <  slotedServer.Server.Size; k++)
+                            {
+                                if (j + k >= problem.NbSlotsPerRows || !dataCenter[i, j + k]) // cannot slot here
+                                {
+                                    slotable = false;
+                                    break;
+                                }
+                            }
+                            if (slotable) // the slot is available !
+                            {
+                                newSlotedServers.Add(new ServerInSlot(slotedServer.Server, -1, i, j)); // add our server in the "done" list
+                                for (int k = 0; k < slotedServer.Server.Size; k++) // set the space as unavailable in the dc
+                                    dataCenter[i, j + k] = false;
+                                serverIsSloted = true;
+                                Console.WriteLine("Server solted");
+                            }
+                        }
+                    }
+                    if (!serverIsSloted)
+                    {
+                        Console.WriteLine("not sloted on second try : size {0} with capa {1}", slotedServer.Server.Size, slotedServer.Server.Capacity);
+
+                        newSlotedServers.Add(new ServerInSlot(slotedServer.Server, -1, -1, -1));
+                    }
+                }
+                else
+                {
+                    newSlotedServers.Add(slotedServer);
+                }
+            }
+
+
+            slotedServers = newSlotedServers;
 
             Console.WriteLine("Step 2");
             // Step 2 : servers are now in place. Now assign groups to maximize availability
