@@ -24,7 +24,14 @@ namespace HashCode
 
         public string ToSolutionString()
         {
-            return IdxRow + " " + IdxCol + " " + Group;
+            if (IdxRow == -1)
+            {
+                return "x";
+            }
+            else
+            {
+                return IdxRow + " " + IdxCol + " " + Group;
+            }
         }
     }
 }
