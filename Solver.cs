@@ -45,7 +45,7 @@ namespace HashCode
                 bool serverIsSloted = false;
 
                 // find an empty slot for this servers
-				for (int j = 0; j < problem.NbSlotsPerRows; j++)
+				for (int j = 0; j < problem.NbSlotsPerRows - server.Size; j++)
                 {
 					for (int i = 0; i < problem.NbRows; i++)
                     {
