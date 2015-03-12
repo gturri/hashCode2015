@@ -36,6 +36,7 @@ namespace HashCode
             // todo : fill to balance over every row ! not fill rows first like its done now. (req !)
             // todo : randomize foreach, evaluate solution and submit the best one (good optimize approach)
             // todo : do not iterate over the whole matrix everytime (if time)
+			int unslotted = 0;
             foreach (var server in problem.Servers)
             {
                 bool serverIsSloted = false;
@@ -68,7 +69,14 @@ namespace HashCode
                         }
                     }
                 }
+
+				if (!serverIsSloted)
+				{
+					Console.WriteLine ("cannot slot server of size {0} with capa {1}", server.Size, server.Capacity);
+					unslotted++;
+				}
             }
+			Console.WriteLine (unslotted + " servers left behind");
 
             // Step 2 : servers are now in place.Now assign groups to maximize availability
             // easy solution : round robin
