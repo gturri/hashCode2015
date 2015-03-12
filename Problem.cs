@@ -73,7 +73,8 @@ namespace HashCode
 
 			//no order = loose 4784 capa
 			//2376 with order by throuput
-			Servers = Servers.OrderByDescending (s => s.Capacity/s.Size).ToList();
+			//2356 by putting small servers last
+			Servers = Servers.OrderByDescending (s => (s.Capacity/s.Size)*10 + s.Size/*larger servers first*/).ToList();
         }
 
         public bool IsSlotAvailable(int idxRow, int idxCol)
