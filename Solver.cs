@@ -94,15 +94,26 @@ namespace HashCode
             Console.WriteLine("Step 2");
             // Step 2 : servers are now in place.Now assign groups to maximize availability
             // easy solution : round robin
+			var groupCapas = new int[problem.NbGroupsToBuild];
             int group = 0;
             foreach (var serverInSlot in slotedServers)
             {
                 if (serverInSlot.IdxCol == -1)
                     continue;
 
-                serverInSlot.Group = group % problem.NbGroupsToBuild;
+				int target = group % problem.NbGroupsToBuild;
+                serverInSlot.Group = target;
+				groupCapas [target] += serverInSlot.Server.Capacity;
                 group++;
             }
+
+			for (int i = 0; i < groupCapas.Length; i++)
+			{
+				var item = groupCapas [i];
+				Console.WriteLine ("g{0}\t{1}", i, item);
+			}
+			Console.WriteLine ("smallest:{0}", groupCapas.Min());
+			Console.WriteLine ("biggest:{0}", groupCapas.Max());
 
             Console.WriteLine("Done !");
             return slotedServers;
