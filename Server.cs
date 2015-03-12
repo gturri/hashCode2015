@@ -9,11 +9,13 @@ namespace HashCode
     {
         public int Capacity { get; private set; }
         public int Size { get; private set; }
+        public int Idx { get; private set; }
 
-        public Server(int capacity, int size)
+        public Server(int capacity, int size, int idx)
         {
             Capacity = capacity;
             Size = size;
+            Idx = idx;
         }
 
     }

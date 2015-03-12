@@ -62,10 +62,12 @@ namespace HashCode
         private void InitializeServers(String[] text)
         {
             Servers = new List<Server>();
+            int counter = 0;
             for (int i = 1 + NbSlotsUnavailable; i < 1 + NbSlotsUnavailable + NbServers; i++ )
             {
                 String[] textServer = text[i].Split(' ');
-                Server server = new Server(int.Parse(textServer[1]), int.Parse(textServer[0]));
+                Server server = new Server(int.Parse(textServer[1]), int.Parse(textServer[0]), counter);
+                counter++;
                 Servers.Add(server);
             }
         }
