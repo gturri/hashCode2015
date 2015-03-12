@@ -20,16 +20,6 @@ namespace HashCode
 
             Dumper.Dump(solution);
 	        Console.ReadKey();
-
-           
-
 	    }
-
-
-
-
-
-
-
 	}
 }
