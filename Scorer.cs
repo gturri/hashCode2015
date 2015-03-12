@@ -33,5 +33,35 @@ namespace HashCode
             }
             return true;
         }
+
+        public int ComputeScore(List<ServerInSlot> solution)
+        {
+            int score = int.MaxValue;
+            for (int unavailableRowIdx = 0; unavailableRowIdx < _problem.NbRows; unavailableRowIdx++)
+            {
+                score = Math.Min(score, ComputeScore(solution, unavailableRowIdx));
+            }
+            return score;
+        }
+
+        private int ComputeScore(List<ServerInSlot> solution, int unavailableRowIdx)
+        {
+            List<int> scorePerGroup = new List<int>();
+            for (int i = 0; i < _problem.NbGroupsToBuild; i++)
+            {
+                scorePerGroup.Add(0);
+            }
+
+            for (int idxServer = 0; idxServer < solution.Count; idxServer++)
+            {
+                var server = solution[idxServer];
+                if (server.IdxRow != unavailableRowIdx)
+                {
+                    scorePerGroup[server.Group] += server.Server.Capacity;
+                }
+            }
+            return scorePerGroup.Min();
+
+        }
     }
 }
