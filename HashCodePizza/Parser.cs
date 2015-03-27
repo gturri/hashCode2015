@@ -6,7 +6,7 @@ namespace HashCodePizza
 	public class Parser
 	{
 		public static bool[,] Read(){
-			return Read (Path.Combine ("..", "..", "bin", "Debug", "test_round.in"));
+			return Read ("test_round.in");
 		}
 
 		public static int nbLines = 180;
