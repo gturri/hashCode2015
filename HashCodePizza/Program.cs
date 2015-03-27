@@ -13,7 +13,8 @@ namespace HashCodePizza
             // true : jambon
             // false : le reste
 			var pizza = Parser.Read ();
-			Drawer.Print (pizza);
+			var solver = new GtSolver (pizza);
+			solver.Dump (solver.Solve ());
 			Console.ReadLine ();
 
             //var solver = new Solver();

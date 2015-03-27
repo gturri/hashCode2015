@@ -11,6 +11,7 @@ namespace HashCodePizza
 
 		public static int nbLines = 180;
 		public static int nbCols = 60;
+		public static int hamMin = 3;
 
 		public static bool[,] Read(string file){
 			string[] text = File.ReadAllLines(file);
