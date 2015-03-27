@@ -1,3 +1,4 @@
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HashCode", "HashCode.csproj", "{8D02B296-E917-4395-86E5-FD4B75E1963E}"
@@ -23,6 +24,18 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{16DC06B9-4DFE-4B50-8C64-BF2CC5BC93D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16DC06B9-4DFE-4B50-8C64-BF2CC5BC93D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16DC06B9-4DFE-4B50-8C64-BF2CC5BC93D0}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{16DC06B9-4DFE-4B50-8C64-BF2CC5BC93D0}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{16DC06B9-4DFE-4B50-8C64-BF2CC5BC93D0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{16DC06B9-4DFE-4B50-8C64-BF2CC5BC93D0}.Debug|x86.Build.0 = Debug|Any CPU
+		{16DC06B9-4DFE-4B50-8C64-BF2CC5BC93D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16DC06B9-4DFE-4B50-8C64-BF2CC5BC93D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16DC06B9-4DFE-4B50-8C64-BF2CC5BC93D0}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{16DC06B9-4DFE-4B50-8C64-BF2CC5BC93D0}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{16DC06B9-4DFE-4B50-8C64-BF2CC5BC93D0}.Release|x86.ActiveCfg = Release|Any CPU
+		{16DC06B9-4DFE-4B50-8C64-BF2CC5BC93D0}.Release|x86.Build.0 = Release|Any CPU
 		{8D02B296-E917-4395-86E5-FD4B75E1963E}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{8D02B296-E917-4395-86E5-FD4B75E1963E}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{8D02B296-E917-4395-86E5-FD4B75E1963E}.Debug|Mixed Platforms.Build.0 = Debug|x86
@@ -43,21 +56,13 @@ Global
 		{D8722DCA-ADC6-4BEF-AF67-BBEFFBD0C1CD}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{D8722DCA-ADC6-4BEF-AF67-BBEFFBD0C1CD}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{D8722DCA-ADC6-4BEF-AF67-BBEFFBD0C1CD}.Release|x86.ActiveCfg = Release|Any CPU
-		{16DC06B9-4DFE-4B50-8C64-BF2CC5BC93D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{16DC06B9-4DFE-4B50-8C64-BF2CC5BC93D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{16DC06B9-4DFE-4B50-8C64-BF2CC5BC93D0}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{16DC06B9-4DFE-4B50-8C64-BF2CC5BC93D0}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{16DC06B9-4DFE-4B50-8C64-BF2CC5BC93D0}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{16DC06B9-4DFE-4B50-8C64-BF2CC5BC93D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{16DC06B9-4DFE-4B50-8C64-BF2CC5BC93D0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{16DC06B9-4DFE-4B50-8C64-BF2CC5BC93D0}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{16DC06B9-4DFE-4B50-8C64-BF2CC5BC93D0}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{16DC06B9-4DFE-4B50-8C64-BF2CC5BC93D0}.Release|x86.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = HashCodePizza\HashCodePizza.csproj
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = HashCode.csproj
 	EndGlobalSection
 EndGlobal

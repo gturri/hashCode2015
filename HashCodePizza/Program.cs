@@ -12,11 +12,12 @@ namespace HashCodePizza
         {
             // true : jambon
             // false : le reste
-            var pizza = new List<List<bool>>(); // rempli par guillaume
+			var pizza = Parser.Read ();
+			Drawer.Print (pizza);
 
 
-            var solver = new Solver();
-            solver.Solve(pizza);
+            //var solver = new Solver();
+            //solver.Solve(pizza);
 
 
         }
