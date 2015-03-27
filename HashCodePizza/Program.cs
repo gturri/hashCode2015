@@ -13,12 +13,11 @@ namespace HashCodePizza
             // true : jambon
             // false : le reste
 			var pizza = Parser.Read ();
-			//Drawer.Print (pizza);
-			Console.ReadLine ();
 
             var solver = new Solver();
             solver.Solve(pizza);
 
+            Console.ReadKey();
 
         }
     }
