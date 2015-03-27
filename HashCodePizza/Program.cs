@@ -10,6 +10,15 @@ namespace HashCodePizza
     {
         static void Main(string[] args)
         {
+            // true : jambon
+            // false : le reste
+            var pizza = new List<List<bool>>(); // rempli par guillaume
+
+
+            var solver = new Solver();
+            solver.Solve(pizza);
+
+
         }
     }
 }
