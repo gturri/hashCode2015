@@ -7,7 +7,7 @@ namespace HashCodePizza
 		public static void Print(bool[,] pizza){
 			for (int l = 0; l < Parser.nbLines; l++) {
 				for (int c=0; c < Parser.nbCols; c++) {
-					Console.Write (pizza[l,c] ? 'H' : ' ');
+					Console.Write (pizza[l,c] ? 'H' : '-');
 				}
 				Console.WriteLine ();
 			}

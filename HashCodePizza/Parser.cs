@@ -20,11 +20,11 @@ namespace HashCodePizza
 			int nbCols = int.Parse (firstLine [1]);
 
 			bool[,] result = new bool[nbLines, nbCols];
-			for (int l=1; l < nbLines; l++) {
+			for (int l=1; l <= nbLines; l++) {
 				string line = text [l];
 				for (int c = 0; c < nbCols; c++) {
 					char ch = line[c];
-					result [l, c] = (ch == 'H');
+					result [l-1, c] = (ch == 'H');
 				}
 			}
 			return result;
