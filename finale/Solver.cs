@@ -50,7 +50,7 @@ namespace finale
 				var balloon = balloons [b];
 
 				// find out next position for balloon
-				KeyValuePair<int, Localisation> newAltAndLocation = GetNextAltAndLocation (balloon);
+				KeyValuePair<int, Localisation> newAltAndLocation = GetNextAltAndLocationVandon (balloon);
                 var deltaAlt = newAltAndLocation.Key ;
 				// update coordinates
 				balloon.Altitude = newAltAndLocation.Key + balloon.Altitude;
@@ -72,7 +72,9 @@ namespace finale
 			int move;
 			int newLine;
 			Vector wind;
-		int tooManyLoops = 10;
+		int tooManyLoops = 20;
+			int newCol;
+			Localisation newPos;
 			do
 			{
 				//move randomly up or down
@@ -83,13 +85,14 @@ namespace finale
 				//compute next location
 				wind = _problem.GetCaze (balloon.Location).Winds [balloon.Altitude + move];
 				newLine = balloon.Location.Line + wind.DeltaRow;
+				newCol = (balloon.Location.Col + wind.DeltaCol) % _problem.NbCols;
+				if(newCol < 0) newCol += 300;
+				newPos = new Localisation (newLine, newCol);
 
 				if(tooManyLoops --< 0)
 					break;
-			} while(newLine < 0 || newLine >= 75); //don't kill baloons
+			} while(newLine < 0 || newLine >= 75 || _problem.GetCaze(newPos).IsTrap[balloon.Altitude+move]); //don't kill baloons
 
-			int newCol = (balloon.Location.Col + wind.DeltaCol) % _problem.NbCols;
-			var newPos = new Localisation (newLine, newCol);
 
 			return new KeyValuePair<int, Localisation> (move, newPos);
 		}
