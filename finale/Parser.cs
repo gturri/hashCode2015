@@ -48,8 +48,9 @@ namespace finale
 			//Winds
 			for (int altitude=1; altitude <= nbAltitudes; altitude++) {
 				for (int lineForGivenAltitude = 0; lineForGivenAltitude < nbLines; lineForGivenAltitude++) {
-					line++;
 					string[] altitudeLineStr = text [line].Split (' ');
+					line++;
+
 				
 					int charIdx = 0;
 					for (int c=0; c < nbCols; c++) {
