@@ -6,8 +6,9 @@ namespace finale
 	{
 		public static void Main (string[] args)
 		{
-			var problem =  Parser.Parse();
+            var problem = Parser.Parse("../../final_round.in");
 
+            // Display map
 		    var mapPrinter = new MapPrinter();
             mapPrinter.PrintMap(problem);
 

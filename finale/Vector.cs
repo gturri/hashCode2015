@@ -9,7 +9,7 @@ namespace finale
 		public int dirX{ get; private set;}
 		public int dirY{ get; private set;}
 
-		public Vector (int startX, int startY, int dirX, int dirY)
+		public Vector (int startX, int startY, int dirX, int dirY) : this()
 		{
 			this.dirY = dirY;
 			this.dirX = dirX;

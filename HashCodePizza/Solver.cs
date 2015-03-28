@@ -56,7 +56,10 @@ namespace HashCodePizza
                             solution.Add(new Slice(i, i, initialj, j));
                             for (int counter = initialj; counter < j; counter++)
                                 cutSpace[i, counter] = true;
-
+                        
+                        var slice = new Slice();
+                        int jambonCounter = 0;
+                        int sliceSize = 0;
                             totalSliceCounter++;
                             textSolution.Add(i + " " + initialj + " " + i + " " + j);
                             Console.WriteLine(i + " " + initialj + " " + i + " " + j);
