@@ -8,6 +8,7 @@ namespace finale
 		public static int Score (Solution solution)
 		{
 			int result = 0;
+
 			List<Balloon> ballons = BuildInitialBalloonList (solution);
 			for (int tour=0; tour < solution.Moves.Count; tour++) {
 				UpdatePositions (solution, ballons, tour);
@@ -61,8 +62,22 @@ namespace finale
 		}
 
 		private static int ComputeInstantScore(Solution solution, List<Balloon> ballons){
-			//TODO
-			return 0;
+			ISet<Localisation> covered = new HashSet<Localisation> ();
+
+			foreach (var ballon in ballons) {
+				foreach (var caze in solution.problem.GetCazesReachedFrom(ballon.Location)) {
+					covered.Add (caze.Location);
+				}
+			}
+
+			int result = 0;
+			foreach (var target in solution.problem.Targets) {
+				if (covered.Contains (target)) {
+					result++;
+				}
+			}
+
+			return result;
 		}
 	}
 }

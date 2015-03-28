@@ -27,6 +27,8 @@ namespace finale
 
 		private List<List<Caze>> _cazes;
 
+		private List<Localisation> _targets;
+		public List<Localisation> Targets { get { return _targets; } }
 
 		public Problem (int nbLines, int nbCols, int nbAltitudes, int rayonCouverture, int nbTours, Localisation departBallons, List<List<Caze>> cazes, int nbAvailableBallons)
 		{
@@ -41,6 +43,23 @@ namespace finale
 			_cazes = cazes;
 
 			NbAvailableBallons = nbAvailableBallons;
+
+			BuildTargets ();
+		}
+
+		private void BuildTargets(){
+			_targets = new List<Localisation> ();
+			for (int r=0; r < NbLines; r++) {
+				for (int c=0; c < NbCols; c++) {
+					if (GetCaze (r, c).IsTarget) {
+						_targets.Add (new Localisation (r, c));
+					}
+				}
+			}
+		}
+
+		public List<Caze> GetCazesReachedFrom(Localisation loc){
+			return GetCazesReachedFrom (loc.Line, loc.Col);
 		}
 
 		public List<Caze> GetCazesReachedFrom(int r, int c)
