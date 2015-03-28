@@ -11,8 +11,9 @@ namespace finale
 		{
             var problem = Parser.Parse("../../final_round.in");
 
-			int max = 0;
-			while (true)
+			int max = -1;
+			bool infinite = false;
+			do
 			{
 				var solver = new Solver (problem);
 				var solution = solver.Solve (problem);
@@ -24,7 +25,7 @@ namespace finale
 					Dumper.Dump (solution, score + ".txt");
 					Console.WriteLine (score);
 				}
-			}
+			} while(infinite);
 		}
 	}
 }
