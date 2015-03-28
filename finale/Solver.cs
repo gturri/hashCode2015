@@ -65,18 +65,43 @@ namespace finale
 
 	    private KeyValuePair<int, Localisation> GetNextAltAndLocation(Balloon balloon)
 	    {
-            // use FindNextPossiblePostions(Problem problem, Localisation currentLoc, int currentAltitude)
-            // to find a new position that is not out of the map
+            // !!!! do not cover the same target twice if possible
 	        var nextPossiblePositions = Problem.FindNextPossiblePostions(_problem, balloon.Location, balloon.Altitude);
             
             // out of those 3, excluse those that that have negative loc (out)
+            for (int i = 0; i < 3; i++)
+                if (nextPossiblePositions[i].Line == -1)
+                    nextPossiblePositions[i] = null;
+
 
             // and pick the one with the most cover
+	        var altitudeChangeToScoreAndLoc = new Dictionary<int, Tuple<int, Localisation>>();
+            if (nextPossiblePositions[0] != null)
+                altitudeChangeToScoreAndLoc.Add(-1, new Tuple<int, Localisation>(
+                    _problem.GetNbTargetsReachedFrom(nextPossiblePositions[0].Line, nextPossiblePositions[0].Col),
+                    new Localisation(nextPossiblePositions[0].Line, nextPossiblePositions[0].Col)));
+            if (nextPossiblePositions[1] != null)
+                altitudeChangeToScoreAndLoc.Add(0, new Tuple<int, Localisation>(
+                    _problem.GetNbTargetsReachedFrom(nextPossiblePositions[1].Line, nextPossiblePositions[1].Col),
+                    new Localisation(nextPossiblePositions[1].Line, nextPossiblePositions[1].Col)));            
+            
+            if (nextPossiblePositions[2] != null)
+                altitudeChangeToScoreAndLoc.Add(1, new Tuple<int, Localisation>(
+                    _problem.GetNbTargetsReachedFrom(nextPossiblePositions[2].Line, nextPossiblePositions[2].Col),
+                    new Localisation(nextPossiblePositions[2].Line, nextPossiblePositions[2].Col)));
 
-            // if there is a choice, try to go to altitude 4
+	        int maxScore = -1;
+	        var maxEntry = new KeyValuePair<int, Localisation>(0, new Localisation(-1, -1));
+	        foreach (var kvp in altitudeChangeToScoreAndLoc)
+	        {
+	            if (kvp.Value .Item1>= maxScore) // /!\ introduction d'un biais vers les hautes altitudes grace à >=
+	            {
+	                maxScore = kvp.Value.Item1;
+	                maxEntry = new KeyValuePair<int, Localisation>(kvp.Key, kvp.Value.Item2);
+	            }
+	        }
 
-
-	        throw new NotImplementedException();
+	        return maxEntry;
 	    }
 	}
 }
