@@ -16,7 +16,7 @@ namespace finale
 
 
 			var solver = new Solver (problem);
-			var solution = solver.Solve ();
+			var solution = solver.Solve(problem);
 
 			Dumper.Dump (solution);
 		}

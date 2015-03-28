@@ -10,19 +10,27 @@ namespace finale
 			throw new NotImplementedException ();
 		}
 
-		public Solution Solve ()
+		public Solution Solve (Problem problem)
 		{
-			throw new NotImplementedException ();
-		}
+		    var solution = new Solution(problem);
+		    var balloons = new Dictionary<int, Balloon>();
+		    InitializeBalloons(balloons);
+
+            while (solution.currentTurn < 400)
+            {
+                balloons = PlayTurn(balloons, solution);
+            }
+        }
 
 
 
         // play 1 turn by moving all baloons
-        public List<Balloon> PlayTurn(Dictionary<int, Balloon> balloons, Solution solution)
+        public Dictionary<int, Balloon> PlayTurn(Dictionary<int, Balloon> balloons, Solution solution)
         {
             // create new result structure
             solution.currentTurn++;
             solution.Moves[solution.currentTurn] = new int[53];
+            var nextBalloons = new Dictionary<int, Balloon>();
 
             foreach (var balloon in balloons)
             {
@@ -34,8 +42,11 @@ namespace finale
                 balloon.Value.Altitude = newAltAndLocation.Key;
                 balloon.Value.Location = newAltAndLocation.Value;
 
-                // dump move in soluton
+                // dump move in soluton at current turn
                 solution.RegisterBaloonMove(balloon.Key, deltaAlt);
+                // solution.RegisterBalloon(balloon);
+
+
             }
 
 
