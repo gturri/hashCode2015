@@ -74,14 +74,25 @@ namespace finale
 			if(balloon.Location.Col < 0 || balloon.Location.Line < 0 || balloon.Location.Col >= 300 || balloon.Location.Line >= 75)
 				return new KeyValuePair<int, Localisation>(0, new Localisation(-1, -1));
 
-			//move randomly up or down
-			int lower = balloon.Altitude < 2 ? 0 : -1;
-			var upper = balloon.Altitude == 8 ? 1 : 2;
-			var move = MainClass.rand.Next (lower, upper);
+			int move;
+			int newLine;
+			Vector wind;
+		int tooManyLoops = 10;
+			do
+			{
+				//move randomly up or down
+				int lower = balloon.Altitude < 2 ? 0 : -1;
+				var upper = balloon.Altitude == 8 ? 1 : 2;
+				move = MainClass.rand.Next (lower, upper);
 
-			//compute next location
-			Vector wind = _problem.GetCaze (balloon.Location).Winds [balloon.Altitude + move];
-			int newLine = balloon.Location.Line + wind.DeltaRow;
+				//compute next location
+				wind = _problem.GetCaze (balloon.Location).Winds [balloon.Altitude + move];
+				newLine = balloon.Location.Line + wind.DeltaRow;
+
+				if(tooManyLoops --< 0)
+					break;
+			} while(newLine < 0 || newLine >= 75); //don't kill baloons
+
 			int newCol = (balloon.Location.Col + wind.DeltaCol) % _problem.NbCols;
 			var newPos = new Localisation (newLine, newCol);
 

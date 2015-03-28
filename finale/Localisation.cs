@@ -15,7 +15,7 @@ namespace finale
 
 		public override int GetHashCode ()
 		{
-			return Line ^ (Col * 357);
+			return Line + Col * 75;
 		}
 
 		public override bool Equals (object obj)
