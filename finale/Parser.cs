@@ -21,6 +21,10 @@ namespace finale
 			int rayonCouverture = int.Parse (secondLine [1]);
 			int nbAvailableBallons = int.Parse (secondLine [2]);
 			int nbToursSimu = int.Parse (secondLine [3]);
+
+			//3rd line
+			string[] thirdLine = text [2].Split (' ');
+			Localisation departBallon = new Localisation (line: int.Parse (thirdLine [0]), col: int.Parse (thirdLine [1]));
 		}
 	}
 }

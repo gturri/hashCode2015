@@ -11,7 +11,9 @@ namespace finale
 		public int RayonCouverture { get; private set;}
 		public int NbTours { get; private set;}
 
-		public Problem (int nbLines, int nbCols, int nbAltitudes, int rayonCouverture, int nbTours)
+		public Localisation DepartBallons { get; private set;}
+
+		public Problem (int nbLines, int nbCols, int nbAltitudes, int rayonCouverture, int nbTours, Localisation departBallons)
 		{
 			NbLines = nbLines;
 			NbCols = nbCols;
@@ -19,6 +21,9 @@ namespace finale
 
 			RayonCouverture = rayonCouverture;
 			NbTours = nbTours;
+
+			DepartBallons = departBallons;
+
 		}
 	}
 }

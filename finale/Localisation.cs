@@ -7,8 +7,10 @@ namespace finale
 		public int Line { get; private set;}
 		public int Col { get; private set;}
 
-		public Localisation ()
+		public Localisation (int line, int col)
 		{
+			Line = line;
+			Col = col;
 		}
 	}
 }
