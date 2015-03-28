@@ -82,7 +82,7 @@ namespace finale
             var possiblePositions = new List<Localisation>();
 
             // -------- Altitude -1 -----------
-            if ((currentAltitude - 1) <= 0)
+            if (!IsAltitudeValid(problem, currentAltitude - 1))
                 possiblePositions.Add(new Localisation(-1, -1));
             else
             {
@@ -97,13 +97,25 @@ namespace finale
             }
 
             // ---------- Altitude 0 -----------
-            int nextCaseAlt0Line = currentLoc.Line + problem.GetCaze(currentLoc).Winds[currentAltitude].DeltaRow;
-            int nextCaseAlt0Col = (currentLoc.Col + problem.GetCaze(currentLoc).Winds[currentAltitude].DeltaCol) % problem.NbCols;
-            possiblePositions.Add(new Localisation(nextCaseAlt0Line, nextCaseAlt0Col));
+            if (!IsAltitudeValid(problem, currentAltitude))
+            {
+                possiblePositions.Add(new Localisation(-1, -1));
+            }
+            else
+            {
+                var nextLine = currentLoc.Line + problem.GetCaze(currentLoc).Winds[currentAltitude].DeltaRow;
+                if (nextLine > problem.NbLines || nextLine < 0)
+                    possiblePositions.Add(new Localisation(-1, -1));
+                else
+                {
+                    int nextCaseAlt0Col = (currentLoc.Col + problem.GetCaze(currentLoc).Winds[currentAltitude].DeltaCol) % problem.NbCols;
+                    possiblePositions.Add(new Localisation(nextLine, nextCaseAlt0Col));
+                }
 
+            }
 
             // ---------- Altitude +1 ------------
-            if (currentAltitude + 1 > 8)
+            if (!IsAltitudeValid(problem, currentAltitude + 1))
             {
                 possiblePositions.Add(new Localisation(-1, -1));
             }
@@ -120,6 +132,13 @@ namespace finale
             }
 
             return possiblePositions;
+        }
+
+        public static bool IsAltitudeValid(Problem problem,int altitude)
+        {
+            if (altitude > problem.NbAltitudes || altitude <= 0)
+                return false;
+            return true;
         }
 
 	}
