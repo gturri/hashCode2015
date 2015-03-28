@@ -37,6 +37,7 @@
     <Compile Include="Parser.cs" />
     <Compile Include="Solver.cs" />
     <Compile Include="Dumper.cs" />
+    <Compile Include="Vector.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
