@@ -62,7 +62,7 @@ namespace finale
 			}
 		}
 
-		private static void KillBallons(Solution solution, List<KillBallon> ballons){
+		private static void KillBallons(Solution solution, List<Balloon> ballons){
 			foreach (var b in ballons) {
 				if (b.Location.Line < 0 || b.Location.Line >= solution.problem.NbLines) {
 					b.IsDead = true;
@@ -75,8 +75,8 @@ namespace finale
 
 			foreach (var ballon in ballons) {
 				if (! ballon.IsDead) {
-					foreach (var caze in solution.problem.GetCazesReachedFrom(ballon.Location)) {
-						covered.Add (caze.Location);
+					foreach (var loc in solution.problem.GetCazesReachedFrom(ballon.Location)) {
+						covered.Add (loc);
 					}
 				}
 			}

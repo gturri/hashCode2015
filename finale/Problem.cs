@@ -58,13 +58,13 @@ namespace finale
 			}
 		}
 
-		public List<Caze> GetCazesReachedFrom(Localisation loc){
+		public List<Localisation> GetCazesReachedFrom(Localisation loc){
 			return GetCazesReachedFrom (loc.Line, loc.Col);
 		}
 
-		public List<Caze> GetCazesReachedFrom(int r, int c)
+		public List<Localisation> GetCazesReachedFrom(int r, int c)
 		{
-			var reached = new List<Caze> ();
+			var reached = new List<Localisation> ();
 			for (int i = -6; i < 7; i++)
 			{
 				for (int j = -6; j < 7; j++)
@@ -81,7 +81,7 @@ namespace finale
 					if (cazeR < 0 || cazeR > 75) //boundaries check
 						continue;
 
-					reached.Add (GetCaze (cazeR, cazeC));
+					reached.Add (new Localisation(cazeR, cazeC));
 				}
 			}
 			return reached;
@@ -89,7 +89,7 @@ namespace finale
 
 		public int GetNbTargetsReachedFrom(int r, int c)
 		{
-			return GetCazesReachedFrom (r, c).Count(caze => caze.IsTarget);
+			return GetCazesReachedFrom (r, c).Count(loc => GetCaze(loc).IsTarget);
 		}
 
 
