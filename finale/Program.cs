@@ -6,7 +6,12 @@ namespace finale
 	{
 		public static void Main (string[] args)
 		{
-			Console.WriteLine ("Hello World!");
+			var problem =  Parser.Parse();
+
+			var solver = new Solver (problem);
+			var solution = solver.Solve ();
+
+			Dumper.Dump (solution);
 		}
 	}
 }
