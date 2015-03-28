@@ -13,6 +13,8 @@ namespace finale
 		public Localisation[] BaloonsPositions = new Localisation[53];
 		public int[] BaloonsAltitude = new int[53];
 
+		public List<List<Localisation>> BallonsAtEndOfEachTurn = new List<List<Localisation>> ();
+
 		public Solution (Problem problem)
 		{
 			this.problem = problem;
@@ -30,6 +32,8 @@ namespace finale
 			System.Diagnostics.Debug.Assert (ballonIdx > 0 && ballonIdx < 53);
 
 			Moves [currentTurn] [ballonIdx] = move;
+
+
 		}
 	}
 }
