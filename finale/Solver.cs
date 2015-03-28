@@ -48,6 +48,7 @@ namespace finale
             for (int b = 0; b < balloons.Length; b++)
 			{
 				var balloon = balloons [b];
+
 				// find out next position for balloon
 				KeyValuePair<int, Localisation> newAltAndLocation = GetNextAltAndLocation (balloon);
                 var deltaAlt = newAltAndLocation.Key ;
@@ -57,12 +58,6 @@ namespace finale
 				// dump move in soluton at current turn
 				solution.RegisterBaloonMove (b, deltaAlt);
 			}
-
-           /* foreach (var s in solution.Moves[solution.currentTurn])
-            {
-                Console.Write(s + " ");
-            }
-            Console.WriteLine();*/
 
 
             solution.currentTurn++;
@@ -167,39 +162,19 @@ namespace finale
             else // no new nodes covered : go to a random legal location
             {
                 //move randomly up or down
-               /* int lower = balloon.Altitude < 2 ? 0 : -1;
+                int lower = balloon.Altitude < 2 ? 0 : -1;
                 var upper = balloon.Altitude == 8 ? 1 : 2;
                 var targetAlt = MainClass.rand.Next(lower, upper);
 
-                if (balloon.Altitude < targetAlt && nextPossiblePositions[2] != null)
+                if (targetAlt == 1 && nextPossiblePositions[2] != null)
                     return new KeyValuePair<int, Localisation>(1, new Localisation(nextPossiblePositions[2].Line, nextPossiblePositions[2].Col));
-                if (balloon.Altitude == targetAlt && nextPossiblePositions[1] != null)
+                if (0 == targetAlt && nextPossiblePositions[1] != null)
                     return new KeyValuePair<int, Localisation>(0, new Localisation(nextPossiblePositions[1].Line, nextPossiblePositions[1].Col));
-                if (balloon.Altitude > targetAlt && nextPossiblePositions[0] != null)
-                    return new KeyValuePair<int, Localisation>(-1, new Localisation(nextPossiblePositions[0].Line, nextPossiblePositions[0].Col));*/
+                if (-1 == targetAlt && nextPossiblePositions[0] != null)
+                    return new KeyValuePair<int, Localisation>(-1, new Localisation(nextPossiblePositions[0].Line, nextPossiblePositions[0].Col));
 
                 return new KeyValuePair<int, Localisation>(0, new Localisation(balloon.Location.Line, balloon.Location.Col));
             }
-
-
-
-            // return the move with the best score
-	       /* int maxScore = -1;
-	        var maxEntry = new KeyValuePair<int, Localisation>(0, new Localisation(-1, -1));
-	        foreach (var kvp in altitudeChangeToScoreAndLoc)
-	        {
-	            if (kvp.Value .Item1 >= maxScore) // /!\ introduction d'un biais vers les hautes altitudes grace à >=
-	            {
-	                maxScore = kvp.Value.Item1;
-	                maxEntry = new KeyValuePair<int, Localisation>(kvp.Key, kvp.Value.Item2);
-	            }
-	        }*/
-
-            // we select the maxEntry for this balloon next turn : 
-            // mark all covered targets as out for the next turn
-           /* foreach (var localisation in _problem.GetListOfTargetReachedFrom(maxEntry.Value.Line, maxEntry.Value.Col))
-                _targetsCoveredThisTurn.Add(localisation);*/
-
 	    }
 	}
 }
