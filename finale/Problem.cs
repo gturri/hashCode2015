@@ -89,21 +89,36 @@ namespace finale
 
 		public int GetNbTargetsReachedFrom(int r, int c)
 		{
-			return GetCazesReachedFrom (r, c).Count(loc => GetCaze(loc).IsTarget);
+		    int count = 0;
+		    foreach (Localisation loc in GetCazesReachedFrom(r, c))
+		    {
+		        if (GetCaze(loc).IsTarget) count++;
+		    }
+		    return count;
 		}
 
-        public List<Localisation> GetListOfTargetReachedFrom(int r, int c)
+	    public List<Localisation> GetListOfTargetReachedFrom(int r, int c)
         {
-            return GetCazesReachedFrom(r, c).Where(loc => GetCaze(loc).IsTarget).ToList();
+            List<Localisation> list = new List<Localisation>();
+            foreach (Localisation loc in GetCazesReachedFrom(r, c))
+            {
+                if (GetCaze(loc).IsTarget) list.Add(loc);
+            }
+            return list;
         }
 
-        public int GetNbTargetsReachedFromWhileIgnoringList(int r, int c, List<Localisation>  targetsAlreadyCovered)
+	    public int GetNbTargetsReachedFromWhileIgnoringList(int r, int c, List<Localisation>  targetsAlreadyCovered)
         {
-            return GetCazesReachedFrom(r, c).Count(loc => GetCaze(loc).IsTarget && !targetsAlreadyCovered.Contains(loc));
+            int count = 0;
+            foreach (Localisation loc in GetCazesReachedFrom(r, c))
+            {
+                if (GetCaze(loc).IsTarget && !targetsAlreadyCovered.Contains(loc)) count++;
+            }
+            return count;
         }
 
 
-        // Give all 3 possible postions for a baloon at next turn in that order :
+	    // Give all 3 possible postions for a baloon at next turn in that order :
         // if altitude -1, if stable, if altitude +1
         public static List<Localisation> FindNextPossiblePostions(Problem problem, Localisation currentLoc, int currentAltitude)
         {
