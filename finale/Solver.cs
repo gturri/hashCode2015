@@ -42,7 +42,6 @@ namespace finale
         public Balloon[] PlayTurn(Balloon[] balloons, Solution solution)
         {
             // create new result structure
-            solution.currentTurn++;
             solution.Moves.Add(new int[53]);
 
             for (int b = 0; b < balloons.Length; b++)
@@ -58,6 +57,13 @@ namespace finale
 				solution.RegisterBaloonMove (b, deltaAlt);
 			}
 
+            foreach (var alt in solution.Moves[solution.currentTurn])
+            {
+                Console.Write(alt + " ");
+            }
+            solution.currentTurn++;
+            Console.WriteLine();
+            Console.ReadKey();
             return balloons;
         }
 
