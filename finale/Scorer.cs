@@ -55,6 +55,9 @@ namespace finale
 
 		private static void UpdateLatLon(Solution solution, List<Balloon> ballons){
 			foreach (var ballon in ballons) {
+				if (ballon.Altitude == 0) {
+					continue;
+				}
 				Vector move = solution.problem.GetCaze (ballon.Location).Winds [ballon.Altitude];
 				int newLine = ballon.Location.Line + move.DeltaRow;
 				int newCol = (ballon.Location.Col + move.DeltaCol) % solution.problem.NbCols;
@@ -74,7 +77,7 @@ namespace finale
 			ISet<Localisation> covered = new HashSet<Localisation> ();
 
 			foreach (var ballon in ballons) {
-				if (! ballon.IsDead) {
+				if (!ballon.IsDead && ballon.Altitude > 0) {
 					foreach (var loc in solution.problem.GetCazesReachedFrom(ballon.Location)) {
 						covered.Add (loc);
 					}
