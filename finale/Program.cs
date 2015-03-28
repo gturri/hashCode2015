@@ -11,7 +11,7 @@ namespace finale
 		{
             var problem = Parser.Parse("../../final_round.in");
 
-			int max = 0;
+			/*int max = 0;
 			while (true)
 			{
 				var solver = new Solver (problem);
@@ -21,10 +21,14 @@ namespace finale
 				if (score > max)
 				{
 					max = score;
-					Dumper.Dump (solution, score + ".txt");
+					Dumper.Dump (solution);
 					Console.WriteLine (score);
 				}
-			}
+			}*/
+
+            var solver = new Solver(problem);
+            var solution = solver.Solve(problem);
+            Dumper.Dump(solution);
 		}
 	}
 }

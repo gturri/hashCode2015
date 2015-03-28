@@ -49,21 +49,20 @@ namespace finale
 				var balloon = balloons [b];
 				// find out next position for balloon
 				KeyValuePair<int, Localisation> newAltAndLocation = GetNextAltAndLocation (balloon);
-                var deltaAlt = newAltAndLocation.Key - balloon.Altitude;
+                var deltaAlt = newAltAndLocation.Key ;
 				// update coordinates
-				balloon.Altitude = newAltAndLocation.Key;
+				balloon.Altitude = newAltAndLocation.Key + balloon.Altitude;
 				balloon.Location = newAltAndLocation.Value;
 				// dump move in soluton at current turn
 				solution.RegisterBaloonMove (b, deltaAlt);
 			}
-
+/*
             foreach (var alt in solution.Moves[solution.currentTurn])
             {
                 Console.Write(alt + " ");
-            }
+            }*/
             solution.currentTurn++;
-            Console.WriteLine();
-            Console.ReadKey();
+            //Console.WriteLine();
             return balloons;
         }
 
