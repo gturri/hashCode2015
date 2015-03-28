@@ -7,6 +7,7 @@ namespace finale
 	{
 		public static Random rand = new Random ();
 
+        [STAThread]
 		public static void Main (string[] args)
 		{
             var problem = Parser.Parse("../../final_round.in");

@@ -76,19 +76,19 @@ namespace finale
 		}
 
 		private static int ComputeInstantScore(Solution solution, List<Balloon> ballons){
-			ISet<Localisation> covered = new HashSet<Localisation> ();
+            var covered = new bool[75,300];
 
 			foreach (var ballon in ballons) {
 				if (!ballon.IsDead && ballon.Altitude > 0) {
 					foreach (var loc in solution.problem.GetCazesReachedFrom(ballon.Location)) {
-						covered.Add (loc);
+						covered[loc.Line, loc.Col] = true;
 					}
 				}
 			}
 
 			int result = 0;
 			foreach (var target in solution.problem.Targets) {
-				if (covered.Contains (target)) {
+				if (covered[target.Line, target.Col]) {
 					result++;
 				}
 			}
