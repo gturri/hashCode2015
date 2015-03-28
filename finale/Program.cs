@@ -8,6 +8,11 @@ namespace finale
 		{
 			var problem =  Parser.Parse();
 
+		    var mapPrinter = new MapPrinter();
+            mapPrinter.PrintMap(problem);
+
+
+
 			var solver = new Solver (problem);
 			var solution = solver.Solve ();
 
