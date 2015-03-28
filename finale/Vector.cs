@@ -4,10 +4,11 @@ namespace finale
 {
 	public struct Vector
 	{
-		public int DeltaRow{ get; private set;}
-		public int DeltaCol{ get; private set;}
+        public short DeltaRow { get; private set; }
+        public short DeltaCol { get; private set; }
 
-		public Vector (int deltaRow, int deltaCol) : this()
+        public Vector(short deltaRow, short deltaCol)
+            : this()
 		{
 			DeltaRow = deltaRow;
 			DeltaCol = deltaCol;

@@ -6,12 +6,12 @@ namespace finale
 {
 	public class Problem
 	{
-		public int NbLines { get; private set;}
-		public int NbCols { get; private set;}
-		public int NbAltitudes { get; private set;}
+        public short NbLines { get; private set; }
+        public short NbCols { get; private set; }
+        public short NbAltitudes { get; private set; }
 
-		public int RayonCouverture { get; private set;}
-		public int NbTours { get; private set;}
+        public short RayonCouverture { get; private set; }
+        public short NbTours { get; private set; }
 
 		public Localisation DepartBallons { get; private set;}
 
@@ -30,7 +30,7 @@ namespace finale
 		private List<Localisation> _targets;
 		public List<Localisation> Targets { get { return _targets; } }
 
-		public Problem (int nbLines, int nbCols, int nbAltitudes, int rayonCouverture, int nbTours, Localisation departBallons, List<List<Caze>> cazes, int nbAvailableBallons)
+        public Problem(short nbLines, short nbCols, short nbAltitudes, short rayonCouverture, short nbTours, Localisation departBallons, List<List<Caze>> cazes, short nbAvailableBallons)
 		{
 			NbLines = nbLines;
 			NbCols = nbCols;
@@ -100,8 +100,10 @@ namespace finale
 
 		private void BuildTargets(){
 			_targets = new List<Localisation> ();
-			for (int r=0; r < NbLines; r++) {
-				for (int c=0; c < NbCols; c++) {
+            for (short r = 0; r < NbLines; r++)
+            {
+                for (short c = 0; c < NbCols; c++)
+                {
 					if (GetCaze (r, c).IsTarget) {
 						_targets.Add (new Localisation (r, c));
 					}
@@ -116,7 +118,7 @@ namespace finale
         Dictionary<Localisation, List<Localisation>> _cache = new Dictionary<Localisation, List<Localisation>>();
         Dictionary<Localisation, List<Localisation>> _cacheTargets = new Dictionary<Localisation, List<Localisation>>();
 
-		public List<Localisation> GetCazesReachedFrom(int r, int c)
+        public List<Localisation> GetCazesReachedFrom(short r, short c)
 		{
 			List<Localisation> fromCache;
 			Localisation cacheKey = new Localisation (r, c);
@@ -125,18 +127,18 @@ namespace finale
 			}
 
 			var reached = new List<Localisation> ();
-			for (int i = -6; i < 7; i++)
+            for (short i = -6; i < 7; i++)
 			{
-				for (int j = -6; j < 7; j++)
+                for (short j = -6; j < 7; j++)
 				{
 					if (i * i + j * j > 7 * 7)
 						continue; //not in range
 
-					int cazeC = (c + i)%300;
+                    short cazeC = (short)((c + i) % 300);
 					if (cazeC < 0)
 						cazeC += 300;
 
-					int cazeR = r + j;
+                    short cazeR = (short)(r + j);
 
 					if (cazeR < 0 || cazeR >= 75) //boundaries check
 						continue;
@@ -148,7 +150,7 @@ namespace finale
 			return reached;
 		}
 
-		public int GetNbTargetsReachedFrom(int r, int c)
+        public int GetNbTargetsReachedFrom(short r, short c)
 		{
 		    int count = 0;
 		    foreach (Localisation loc in GetCazesReachedFrom(r, c))
@@ -163,7 +165,7 @@ namespace finale
             return GetListOfTargetReachedFrom(l.Line, l.Col);
         }
 
-	    public List<Localisation> GetListOfTargetReachedFrom(int r, int c)
+        public List<Localisation> GetListOfTargetReachedFrom(short r, short c)
         {
             List<Localisation> fromCache;
             Localisation cacheKey = new Localisation(r, c);
@@ -182,7 +184,7 @@ namespace finale
             return list;
         }
 
-	    public int GetNbTargetsReachedFromWhileIgnoringList(int r, int c, List<Localisation>  targetsAlreadyCovered)
+        public int GetNbTargetsReachedFromWhileIgnoringList(short r, short c, List<Localisation> targetsAlreadyCovered)
         {
             int count = 0;
             foreach (Localisation loc in GetCazesReachedFrom(r, c))
@@ -205,12 +207,12 @@ namespace finale
                 possiblePositions.Add(new Localisation(-1, -1));
             else
             {
-                var nextLine = currentLoc.Line + problem.GetCaze(currentLoc).Winds[currentAltitude - 1].DeltaRow;
+                short nextLine = (short) (currentLoc.Line + problem.GetCaze(currentLoc).Winds[currentAltitude - 1].DeltaRow);
                 if (nextLine > problem.NbLines || nextLine < 0)
                     possiblePositions.Add(new Localisation(-1, -1));
                 else
                 {
-                    int nextCaseAltmin1Col = (currentLoc.Col + problem.GetCaze(currentLoc).Winds[currentAltitude - 1].DeltaCol) % problem.NbCols;
+                    short nextCaseAltmin1Col = (short) ((currentLoc.Col + problem.GetCaze(currentLoc).Winds[currentAltitude - 1].DeltaCol) % problem.NbCols);
                     possiblePositions.Add(new Localisation(nextLine, nextCaseAltmin1Col));
                 }
             }
@@ -222,12 +224,12 @@ namespace finale
             }
             else
             {
-                var nextLine = currentLoc.Line + problem.GetCaze(currentLoc).Winds[currentAltitude].DeltaRow;
+                short nextLine = (short) (currentLoc.Line + problem.GetCaze(currentLoc).Winds[currentAltitude].DeltaRow);
                 if (nextLine > problem.NbLines || nextLine < 0)
                     possiblePositions.Add(new Localisation(-1, -1));
                 else
                 {
-                    int nextCaseAlt0Col = (currentLoc.Col + problem.GetCaze(currentLoc).Winds[currentAltitude].DeltaCol) % problem.NbCols;
+                    short nextCaseAlt0Col = (short) ((currentLoc.Col + problem.GetCaze(currentLoc).Winds[currentAltitude].DeltaCol) % problem.NbCols);
                     possiblePositions.Add(new Localisation(nextLine, nextCaseAlt0Col));
                 }
 
@@ -240,12 +242,12 @@ namespace finale
             }
             else
             {
-                var nextLine = currentLoc.Line + problem.GetCaze(currentLoc).Winds[currentAltitude + 1].DeltaRow;
+                short nextLine = (short) (currentLoc.Line + problem.GetCaze(currentLoc).Winds[currentAltitude + 1].DeltaRow);
                 if (nextLine > problem.NbLines || nextLine < 0)
                     possiblePositions.Add(new Localisation(-1, -1));
                 else
                 {
-                    int nextCaseAltmax1Col = (currentLoc.Col + problem.GetCaze(currentLoc).Winds[currentAltitude + 1].DeltaCol) % problem.NbCols;
+                    short nextCaseAltmax1Col = (short) ((currentLoc.Col + problem.GetCaze(currentLoc).Winds[currentAltitude + 1].DeltaCol) % problem.NbCols);
                     possiblePositions.Add(new Localisation(nextLine, nextCaseAltmax1Col));
                 }
             }

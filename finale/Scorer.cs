@@ -59,8 +59,8 @@ namespace finale
 					continue;
 				}
 				Vector move = solution.problem.GetCaze (ballon.Location).Winds [ballon.Altitude];
-				int newLine = ballon.Location.Line + move.DeltaRow;
-				int newCol = (ballon.Location.Col + move.DeltaCol) % solution.problem.NbCols;
+				short newLine = (short)(ballon.Location.Line + move.DeltaRow);
+                short newCol = (short) ((ballon.Location.Col + move.DeltaCol) % solution.problem.NbCols);
 				if (newCol < 0)
 					newCol += 300;
 				ballon.Location = new Localisation (newLine, newCol);
@@ -93,13 +93,16 @@ namespace finale
 		    }
 
 		    int result = 0;
-			foreach (var target in solution.problem.Targets) {
-				if (covered[target.Line, target.Col]) {
-					result++;
-				}
-			}
+		    for (int t = 0; t < solution.problem.Targets.Count; t++)
+		    {
+		        var target = solution.problem.Targets[t];
+		        if (covered[target.Line, target.Col])
+		        {
+		            result++;
+		        }
+		    }
 
-			return result;
+		    return result;
 		}
 	}
 }

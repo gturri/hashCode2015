@@ -12,20 +12,20 @@ namespace finale
 
 			//1st line
 			string[] firstLine = text[0].Split(' ');
-			int nbLines = int.Parse (firstLine [0]);
-			int nbCols = int.Parse (firstLine [1]);
-			int nbAltitudes = int.Parse(firstLine[2]);
+            short nbLines = short.Parse(firstLine[0]);
+            short nbCols = short.Parse(firstLine[1]);
+            short nbAltitudes = short.Parse(firstLine[2]);
 
 			//2nd line
 			string[] secondLine = text [1].Split (' ');
-			int nbCibles = int.Parse (secondLine [0]);
-			int rayonCouverture = int.Parse (secondLine [1]);
-			int nbAvailableBallons = int.Parse (secondLine [2]);
-			int nbToursSimu = int.Parse (secondLine [3]);
+            short nbCibles = short.Parse(secondLine[0]);
+            short rayonCouverture = short.Parse(secondLine[1]);
+            short nbAvailableBallons = short.Parse(secondLine[2]);
+            short nbToursSimu = short.Parse(secondLine[3]);
 
 			//3rd line
 			string[] thirdLine = text [2].Split (' ');
-			Localisation departBallon = new Localisation (line: int.Parse (thirdLine [0]), col: int.Parse (thirdLine [1]));
+			Localisation departBallon = new Localisation (line: short.Parse (thirdLine [0]), col: short.Parse (thirdLine [1]));
 
 			//targets
 			List<List<Caze>> cazes = new List<List<Caze>> ();
@@ -54,8 +54,8 @@ namespace finale
 				
 					int charIdx = 0;
 					for (int c=0; c < nbCols; c++) {
-						int deltaRow = int.Parse (altitudeLineStr [charIdx]);
-						int deltaCol = int.Parse (altitudeLineStr [charIdx + 1]);
+                        short deltaRow = short.Parse(altitudeLineStr[charIdx]);
+                        short deltaCol = short.Parse(altitudeLineStr[charIdx + 1]);
 						charIdx += 2;
 
 						cazes [lineForGivenAltitude] [c].Winds [altitude] = new Vector(deltaRow, deltaCol);

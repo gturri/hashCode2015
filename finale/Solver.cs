@@ -64,38 +64,38 @@ namespace finale
             return balloons;
         }
 
-		private KeyValuePair<int, Localisation> GetNextAltAndLocationVandon(Balloon balloon)
-		{
-			if(balloon.Location.Col < 0 || balloon.Location.Line < 0 || balloon.Location.Col >= 300 || balloon.Location.Line >= 75)
-				return new KeyValuePair<int, Localisation>(0, new Localisation(-1, -1));
+	    private KeyValuePair<int, Localisation> GetNextAltAndLocationVandon(Balloon balloon)
+	    {
+	        if (balloon.Location.Col < 0 || balloon.Location.Line < 0 || balloon.Location.Col >= 300 || balloon.Location.Line >= 75)
+	            return new KeyValuePair<int, Localisation>(0, new Localisation(-1, -1));
 
-			int move;
-			int newLine;
-			Vector wind;
-		int tooManyLoops = 20;
-			int newCol;
-			Localisation newPos;
-			do
-			{
-				//move randomly up or down
-				int lower = balloon.Altitude < 2 ? 0 : -1;
-				var upper = balloon.Altitude == 8 ? 1 : 2;
-				move = MainClass.rand.Next (lower, upper);
+	        int move;
+	        short newLine;
+	        Vector wind;
+	        int tooManyLoops = 20;
+	        short newCol;
+	        Localisation newPos;
+	        do
+	        {
+	            //move randomly up or down
+	            int lower = balloon.Altitude < 2 ? 0 : -1;
+	            var upper = balloon.Altitude == 8 ? 1 : 2;
+	            move = MainClass.rand.Next(lower, upper);
 
-				//compute next location
-				wind = _problem.GetCaze (balloon.Location).Winds [balloon.Altitude + move];
-				newLine = balloon.Location.Line + wind.DeltaRow;
-				newCol = (balloon.Location.Col + wind.DeltaCol) % _problem.NbCols;
-				if(newCol < 0) newCol += 300;
-				newPos = new Localisation (newLine, newCol);
+	            //compute next location
+	            wind = _problem.GetCaze(balloon.Location).Winds[balloon.Altitude + move];
+	            newLine = (short) (balloon.Location.Line + wind.DeltaRow);
+	            newCol = (short) ((balloon.Location.Col + wind.DeltaCol)%_problem.NbCols);
+	            if (newCol < 0) newCol += 300;
+	            newPos = new Localisation(newLine, newCol);
 
-				if(tooManyLoops --< 0)
-					break;
-			} while(newLine < 0 || newLine >= 75 || _problem.GetCaze(newPos).IsTrap[balloon.Altitude+move]); //don't kill baloons
+	            if (tooManyLoops-- < 0)
+	                break;
+	        } while (newLine < 0 || newLine >= 75 || _problem.GetCaze(newPos).IsTrap[balloon.Altitude + move]); //don't kill baloons
 
 
-			return new KeyValuePair<int, Localisation> (move, newPos);
-		}
+	        return new KeyValuePair<int, Localisation>(move, newPos);
+	    }
 
 
 
