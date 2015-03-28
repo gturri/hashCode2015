@@ -12,7 +12,7 @@ namespace finale
             var problem = Parser.Parse("../../final_round.in");
 
 			int max = -1;
-			bool infinite = false;
+			bool infinite = true;
 			do
 			{
 				var solver = new Solver (problem);

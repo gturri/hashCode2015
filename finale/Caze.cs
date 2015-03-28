@@ -6,6 +6,10 @@ namespace finale
 	{
 		public Vector[] Winds { get; set; }
 		public bool IsTarget { get; set; }
+		/// <summary>
+		/// true if there is no way out of this caze at a specific altitude
+		/// </summary>
+		public bool[] IsTrap { get; set;}
 
 		public Caze (int altitudeMax)
 		{
@@ -14,4 +18,3 @@ namespace finale
 		}
 	}
 }
-
