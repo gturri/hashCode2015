@@ -18,12 +18,6 @@ namespace finale
 		public Solution (Problem problem)
 		{
 			this.problem = problem;
-			Moves.Add(new int[53]);
-
-			for (int i = 0; i < 53; i++)
-			{
-				BaloonsPositions [i] = problem.DepartBallons;
-			}
 		}
 
 		public void RegisterBaloonMove(int ballonIdx, int move)
