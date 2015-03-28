@@ -72,12 +72,8 @@ namespace finale
 				return new KeyValuePair<int, Localisation>(0, new Localisation(-1, -1));
 
 			//move randomly up or down
-			int lower = -1;
-			if (balloon.Altitude < 2)
-				lower = 0;
-			var upper = 2;
-			if (balloon.Altitude == 8)
-				upper = 1;
+			int lower = balloon.Altitude < 2 ? 0 : -1;
+			var upper = balloon.Altitude == 8 ? 1 : 2;
 			var move = MainClass.rand.Next (lower, upper);
 
 			//compute next location
@@ -86,7 +82,7 @@ namespace finale
 			int newCol = (balloon.Location.Col + wind.DeltaCol) % _problem.NbCols;
 			var newPos = new Localisation (newLine, newCol);
 
-			return new KeyValuePair<int, Localisation> (move, newPos);
+			return new KeyValuePair<int, Localisation> (balloon.Altitude + move, newPos);
 		}
 
 	    private KeyValuePair<int, Localisation> GetNextAltAndLocation(Balloon balloon)
