@@ -82,7 +82,7 @@ namespace finale
 			int newCol = (balloon.Location.Col + wind.DeltaCol) % _problem.NbCols;
 			var newPos = new Localisation (newLine, newCol);
 
-			return new KeyValuePair<int, Localisation> (balloon.Altitude + move, newPos);
+			return new KeyValuePair<int, Localisation> (move, newPos);
 		}
 
 	    private KeyValuePair<int, Localisation> GetNextAltAndLocation(Balloon balloon)
