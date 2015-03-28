@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Concurrent;
 
 namespace finale
 {
@@ -113,7 +114,7 @@ namespace finale
 			return GetCazesReachedFrom (loc.Line, loc.Col);
 		}
 
-		Dictionary<Localisation, List<Localisation>> _cache = new Dictionary<Localisation, List<Localisation>>();
+		ConcurrentDictionary<Localisation, List<Localisation>> _cache = new ConcurrentDictionary<Localisation, List<Localisation>>();
 
 		public List<Localisation> GetCazesReachedFrom(int r, int c)
 		{
@@ -143,7 +144,10 @@ namespace finale
 					reached.Add (new Localisation(cazeR, cazeC));
 				}
 			}
-			_cache.Add (cacheKey, reached);
+			try {
+			_cache.TryAdd (cacheKey, reached);
+			} catch (Exception){
+			}
 			return reached;
 		}
 

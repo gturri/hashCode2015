@@ -6,7 +6,7 @@ namespace finale
 	public class GtDummySolver
 	{
 		private Problem _problem;
-		private Random _random = new Random();
+		private static Random _random = MainClass.rand;
 
 		public GtDummySolver (Problem problem)
 		{
@@ -14,12 +14,15 @@ namespace finale
 		}
 
 		public Solution Solve(){
-			Solution current = SolInit ();
+			return Solve (SolInit ());
+		}
+
+		public Solution Solve(Solution current){
 			int bestScore = Scorer.Score (current);
 
 			while (true) {
-				current = NextSol (current);
-				int score = Scorer.Score (current);
+				int score;
+				current = NextSol (current, out score);
 				Console.WriteLine (score);
 				if (score > bestScore) {
 					bestScore = score;
@@ -43,8 +46,9 @@ namespace finale
 			return sol;
 		}
 
-		private Solution NextSol(Solution current){
+		private Solution NextSol(Solution current, out int score){
 			bool done = false;
+			score = 0;
 			while ( ! done ) {
 				int b = _random.Next (0, _problem.NbAvailableBallons);
 				int t = _random.Next(0, _problem.NbTours);
@@ -60,7 +64,7 @@ namespace finale
 				newSol.Moves = newMoves;
 
 				try {
-					Scorer.Score(newSol);
+					score = Scorer.Score(newSol);
 					return newSol;
 				}catch(Exception){
 					newSol = current;

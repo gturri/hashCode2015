@@ -6,18 +6,22 @@ namespace finale
 {
 	public class Dumper
 	{
+		private static object _lock = new object();
+
 		public static void Dump (Solution solution, string destFile = null)
 		{
-			List<string> strSoluce = new List<String> ();
-			for ( int tour = 0 ; tour < solution.problem.NbTours ; tour++ ){
-				string line = String.Empty;
-				for (int ballon=0; ballon < solution.problem.NbAvailableBallons; ballon++) {
-					line += solution.Moves[tour][ballon] + " ";
+			lock (_lock) {
+				List<string> strSoluce = new List<String> ();
+				for (int tour = 0; tour < solution.problem.NbTours; tour++) {
+					string line = String.Empty;
+					for (int ballon=0; ballon < solution.problem.NbAvailableBallons; ballon++) {
+						line += solution.Moves [tour] [ballon] + " ";
+					}
+					strSoluce.Add (line);
 				}
-				strSoluce.Add(line);
-			}
 
-			File.WriteAllLines (destFile ?? BuildFilename(), strSoluce);
+				File.WriteAllLines (destFile ?? BuildFilename (), strSoluce);
+			}
 		}
 
 		private static string BuildFilename()
