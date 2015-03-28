@@ -16,7 +16,7 @@ namespace finale
 		{
 		    var solution = new Solution(problem);
             var balloons = InitializeBalloons();
-		   
+
 
             while (solution.currentTurn < _problem.NbTours - 1)
             {
@@ -61,13 +61,34 @@ namespace finale
             return balloons;
         }
 
+		private KeyValuePair<int, Localisation> GetNextAltAndLocationVandon(Balloon balloon)
+		{
+			if(balloon.Location.Col < 0 || balloon.Location.Line < 0 || balloon.Location.Col >= 300 || balloon.Location.Line >= 75)
+				return new KeyValuePair<int, Localisation>(0, new Localisation(-1, -1));
 
+			//move randomly up or down
+			int lower = -1;
+			if (balloon.Altitude < 2)
+				lower = 0;
+			var upper = 2;
+			if (balloon.Altitude == 8)
+				upper = 1;
+			var move = MainClass.rand.Next (lower, upper);
+
+			//compute next location
+			Vector wind = _problem.GetCaze (balloon.Location).Winds [balloon.Altitude + move];
+			int newLine = balloon.Location.Line + wind.DeltaRow;
+			int newCol = (balloon.Location.Col + wind.DeltaCol) % _problem.NbCols;
+			var newPos = new Localisation (newLine, newCol);
+
+			return new KeyValuePair<int, Localisation> (move, newPos);
+		}
 
 	    private KeyValuePair<int, Localisation> GetNextAltAndLocation(Balloon balloon)
 	    {
             // !!!! do not cover the same target twice if possible
 	        var nextPossiblePositions = Problem.FindNextPossiblePostions(_problem, balloon.Location, balloon.Altitude);
-            
+
             // out of those 3, excluse those that that have negative loc (out)
             for (int i = 0; i < 3; i++)
                 if (nextPossiblePositions[i].Line == -1)
@@ -83,8 +104,8 @@ namespace finale
             if (nextPossiblePositions[1] != null)
                 altitudeChangeToScoreAndLoc.Add(0, new Tuple<int, Localisation>(
                     _problem.GetNbTargetsReachedFrom(nextPossiblePositions[1].Line, nextPossiblePositions[1].Col),
-                    new Localisation(nextPossiblePositions[1].Line, nextPossiblePositions[1].Col)));            
-            
+                    new Localisation(nextPossiblePositions[1].Line, nextPossiblePositions[1].Col)));
+
             if (nextPossiblePositions[2] != null)
                 altitudeChangeToScoreAndLoc.Add(1, new Tuple<int, Localisation>(
                     _problem.GetNbTargetsReachedFrom(nextPossiblePositions[2].Line, nextPossiblePositions[2].Col),
@@ -105,4 +126,3 @@ namespace finale
 	    }
 	}
 }
-
