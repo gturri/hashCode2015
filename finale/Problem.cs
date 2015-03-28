@@ -14,6 +14,10 @@ namespace finale
 
 		public Localisation DepartBallons { get; private set;}
 
+		public Caze GetCaze(Localisation loc){
+			return GetCaze (loc.Line, loc.Col);
+		}
+
 		public Caze GetCaze (int r, int c){
             return _cazes[r][c];
 		}
