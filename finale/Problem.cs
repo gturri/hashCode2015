@@ -113,7 +113,8 @@ namespace finale
 			return GetCazesReachedFrom (loc.Line, loc.Col);
 		}
 
-		Dictionary<Localisation, List<Localisation>> _cache = new Dictionary<Localisation, List<Localisation>>();
+        Dictionary<Localisation, List<Localisation>> _cache = new Dictionary<Localisation, List<Localisation>>();
+        Dictionary<Localisation, List<Localisation>> _cacheTargets = new Dictionary<Localisation, List<Localisation>>();
 
 		public List<Localisation> GetCazesReachedFrom(int r, int c)
 		{
@@ -157,13 +158,27 @@ namespace finale
 		    return count;
 		}
 
+        public List<Localisation> GetListOfTargetReachedFrom(Localisation l)
+        {
+            return GetListOfTargetReachedFrom(l.Line, l.Col);
+        }
+
 	    public List<Localisation> GetListOfTargetReachedFrom(int r, int c)
         {
+            List<Localisation> fromCache;
+            Localisation cacheKey = new Localisation(r, c);
+            if (_cacheTargets.TryGetValue(cacheKey, out fromCache))
+            {
+                return fromCache;
+            }
+
             List<Localisation> list = new List<Localisation>();
             foreach (Localisation loc in GetCazesReachedFrom(r, c))
             {
                 if (GetCaze(loc).IsTarget) list.Add(loc);
             }
+
+            _cacheTargets.Add(cacheKey, list);
             return list;
         }
 

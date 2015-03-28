@@ -2,12 +2,12 @@ using System;
 
 namespace finale
 {
-	public class Localisation
+	public struct Localisation
 	{
 		public int Line { get; private set;}
 		public int Col { get; private set;}
 
-		public Localisation (int line, int col)
+		public Localisation (int line, int col):this()
 		{
 			Line = line;
 			Col = col;
@@ -19,12 +19,11 @@ namespace finale
 		}
 
 		public override bool Equals (object obj)
-		{
-			var other = obj as Localisation;
-			if (other == null) {
-				return false;
-			}
+        {
+            if (!(obj is Localisation))
+                return false;
 
+            var other = (Localisation)obj;
 			return Line == other.Line && Col == other.Col;
 		}
 

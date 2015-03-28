@@ -107,22 +107,16 @@ namespace finale
                 return new KeyValuePair<int, Localisation>(0, new Localisation(-1, -1));
 
 	        var nextPossiblePositions = Problem.FindNextPossiblePostions(_problem, balloon.Location, balloon.Altitude);
-
-            // out of those 3, excluse those that that have negative loc (out)
-            for (int i = 0; i < 3; i++)
-                if (nextPossiblePositions[i].Line == -1)
-                    nextPossiblePositions[i] = null;
-
-
+            
             // and pick the one with the most cover for uncovered targets
 	        int scoremin1 = -1;
             int score0 = -1;
 	        int scoremax1 = -1;
-            if (nextPossiblePositions[0] != null)
+            if (nextPossiblePositions[0].Line == -1)
                 scoremin1 = _problem.GetNbTargetsReachedFromWhileIgnoringList(nextPossiblePositions[0].Line, nextPossiblePositions[0].Col, _targetsCoveredThisTurn);
-	        if (nextPossiblePositions[1] != null)
+            if (nextPossiblePositions[1].Line == -1)
                 score0 = _problem.GetNbTargetsReachedFromWhileIgnoringList(nextPossiblePositions[1].Line, nextPossiblePositions[1].Col, _targetsCoveredThisTurn);
-            if (nextPossiblePositions[2] != null)
+            if (nextPossiblePositions[2].Line == -1)
                 scoremax1 = _problem.GetNbTargetsReachedFromWhileIgnoringList(nextPossiblePositions[2].Line, nextPossiblePositions[2].Col, _targetsCoveredThisTurn);
 
             // if there is a positive score (cover an uncovered target !), use those scores
@@ -130,16 +124,16 @@ namespace finale
             var altitudeChangeToScoreAndLoc = new Dictionary<int, Tuple<int, Localisation>>();
             if (scoremin1 > 0 || score0 > 0 || scoremax1 > 0)
             {
-                
-                if (nextPossiblePositions[0] != null)
+
+                if (nextPossiblePositions[0].Line == -1)
                     altitudeChangeToScoreAndLoc.Add(-1, new Tuple<int, Localisation>(
                         scoremin1,
                         new Localisation(nextPossiblePositions[0].Line, nextPossiblePositions[0].Col)));
-                if (nextPossiblePositions[1] != null)
+                if (nextPossiblePositions[1].Line == -1)
                     altitudeChangeToScoreAndLoc.Add(0, new Tuple<int, Localisation>(
                         score0,
                         new Localisation(nextPossiblePositions[1].Line, nextPossiblePositions[1].Col)));
-                if (nextPossiblePositions[2] != null)
+                if (nextPossiblePositions[2].Line == -1)
                     altitudeChangeToScoreAndLoc.Add(1, new Tuple<int, Localisation>(
                         scoremax1,
                         new Localisation(nextPossiblePositions[2].Line, nextPossiblePositions[2].Col)));
@@ -169,11 +163,11 @@ namespace finale
                 var upper = balloon.Altitude == 8 ? 1 : 2;
                 var targetAlt = MainClass.rand.Next(lower, upper);
 
-                if (targetAlt == 1 && nextPossiblePositions[2] != null)
+                if (targetAlt == 1 && nextPossiblePositions[2].Line == -1)
                     return new KeyValuePair<int, Localisation>(1, new Localisation(nextPossiblePositions[2].Line, nextPossiblePositions[2].Col));
-                if (0 == targetAlt && nextPossiblePositions[1] != null)
+                if (0 == targetAlt && nextPossiblePositions[1].Line == -1)
                     return new KeyValuePair<int, Localisation>(0, new Localisation(nextPossiblePositions[1].Line, nextPossiblePositions[1].Col));
-                if (-1 == targetAlt && nextPossiblePositions[0] != null)
+                if (-1 == targetAlt && nextPossiblePositions[0].Line == -1)
                     return new KeyValuePair<int, Localisation>(-1, new Localisation(nextPossiblePositions[0].Line, nextPossiblePositions[0].Col));
 
                 return new KeyValuePair<int, Localisation>(0, new Localisation(balloon.Location.Line, balloon.Location.Col));

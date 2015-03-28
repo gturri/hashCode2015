@@ -78,15 +78,21 @@ namespace finale
 		private static int ComputeInstantScore(Solution solution, List<Balloon> ballons){
             var covered = new bool[75,300];
 
-			foreach (var ballon in ballons) {
-				if (!ballon.IsDead && ballon.Altitude > 0) {
-					foreach (var loc in solution.problem.GetCazesReachedFrom(ballon.Location)) {
-						covered[loc.Line, loc.Col] = true;
-					}
-				}
-			}
+		    for (int b = 0; b < ballons.Count; b++)
+		    {
+		        var ballon = ballons[b];
+		        if (!ballon.IsDead && ballon.Altitude > 0)
+		        {
+                    var cazes = solution.problem.GetListOfTargetReachedFrom(ballon.Location);
+		            for (int c = 0; c < cazes.Count; c++)
+		            {
+		                var loc = cazes[c];
+		                covered[loc.Line, loc.Col] = true;
+		            }
+		        }
+		    }
 
-			int result = 0;
+		    int result = 0;
 			foreach (var target in solution.problem.Targets) {
 				if (covered[target.Line, target.Col]) {
 					result++;
