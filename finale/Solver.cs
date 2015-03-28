@@ -156,7 +156,7 @@ namespace finale
             else // no new nodes covered : go to a random legal location
             {
                 //move randomly up or down
-                int lower = balloon.Altitude < 2 ? 0 : -1;
+               /* int lower = balloon.Altitude < 2 ? 0 : -1;
                 var upper = balloon.Altitude == 8 ? 1 : 2;
                 var targetAlt = MainClass.rand.Next(lower, upper);
 
@@ -165,7 +165,7 @@ namespace finale
                 if (balloon.Altitude == targetAlt && nextPossiblePositions[1] != null)
                     return new KeyValuePair<int, Localisation>(0, new Localisation(nextPossiblePositions[1].Line, nextPossiblePositions[1].Col));
                 if (balloon.Altitude > targetAlt && nextPossiblePositions[0] != null)
-                    return new KeyValuePair<int, Localisation>(-1, new Localisation(nextPossiblePositions[0].Line, nextPossiblePositions[0].Col));
+                    return new KeyValuePair<int, Localisation>(-1, new Localisation(nextPossiblePositions[0].Line, nextPossiblePositions[0].Col));*/
 
                 return new KeyValuePair<int, Localisation>(0, new Localisation(balloon.Location.Line, balloon.Location.Col));
             }

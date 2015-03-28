@@ -78,7 +78,7 @@ namespace finale
 
 					int cazeR = r + j;
 
-					if (cazeR < 0 || cazeR > 75) //boundaries check
+					if (cazeR < 0 || cazeR >= 75) //boundaries check
 						continue;
 
 					reached.Add (new Localisation(cazeR, cazeC));
