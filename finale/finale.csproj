@@ -40,6 +40,7 @@
     <Compile Include="Vector.cs" />
     <Compile Include="Problem.cs" />
     <Compile Include="Caze.cs" />
+    <Compile Include="Localisation.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
