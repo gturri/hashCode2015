@@ -6,7 +6,7 @@ namespace finale
 {
 	public class Dumper
 	{
-		public static void Dump (Solution solution)
+		public static void Dump (Solution solution, string destFile = null)
 		{
 			List<string> strSoluce = new List<String> ();
 			for ( int tour = 0 ; tour < solution.problem.NbTours ; tour++ ){
@@ -17,7 +17,7 @@ namespace finale
 				strSoluce.Add(line);
 			}
 
-			File.WriteAllLines (BuildFilename(), strSoluce);
+			File.WriteAllLines (destFile ?? BuildFilename(), strSoluce);
 		}
 
 		private static string BuildFilename()
