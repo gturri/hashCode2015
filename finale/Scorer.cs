@@ -55,12 +55,14 @@ namespace finale
 
 		private static void UpdateLatLon(Solution solution, List<Balloon> ballons){
 			foreach (var ballon in ballons) {
-				if (ballon.Altitude == 0) {
+				if (ballon.Altitude == 0 || ballon.IsDead) {
 					continue;
 				}
 				Vector move = solution.problem.GetCaze (ballon.Location).Winds [ballon.Altitude];
 				int newLine = ballon.Location.Line + move.DeltaRow;
 				int newCol = (ballon.Location.Col + move.DeltaCol) % solution.problem.NbCols;
+				if (newCol < 0)
+					newCol += 300;
 				ballon.Location = new Localisation (newLine, newCol);
 			}
 		}
