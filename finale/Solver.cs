@@ -43,7 +43,7 @@ namespace finale
         {
             // create new result structure
             solution.currentTurn++;
-            solution.Moves[solution.currentTurn] = new int[53];
+            solution.Moves.Add(new int[53]);
 
             for (int b = 0; b < balloons.Length; b++)
 			{
