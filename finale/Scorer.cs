@@ -28,6 +28,7 @@ namespace finale
 		private static void UpdatePositions(Solution solution, List<Balloon> ballons, int tour){
 			UpdateAltitudes (solution, ballons, tour);
 			UpdateLatLon (solution, ballons);
+			KillBallons (solution, ballons);
 		}
 
 		private static void UpdateAltitudes(Solution solution, List<Balloon> ballons, int tour){
@@ -61,12 +62,22 @@ namespace finale
 			}
 		}
 
+		private static void KillBallons(Solution solution, List<KillBallon> ballons){
+			foreach (var b in ballons) {
+				if (b.Location.Line < 0 || b.Location.Line >= solution.problem.NbLines) {
+					b.IsDead = true;
+				}
+			}
+		}
+
 		private static int ComputeInstantScore(Solution solution, List<Balloon> ballons){
 			ISet<Localisation> covered = new HashSet<Localisation> ();
 
 			foreach (var ballon in ballons) {
-				foreach (var caze in solution.problem.GetCazesReachedFrom(ballon.Location)) {
-					covered.Add (caze.Location);
+				if (! ballon.IsDead) {
+					foreach (var caze in solution.problem.GetCazesReachedFrom(ballon.Location)) {
+						covered.Add (caze.Location);
+					}
 				}
 			}
 
