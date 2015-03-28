@@ -18,7 +18,7 @@ namespace finale
 		public Solution (Problem problem)
 		{
 			this.problem = problem;
-			Moves [0] = new int[53];
+			Moves.Add(new int[53]);
 
 			for (int i = 0; i < 53; i++)
 			{
