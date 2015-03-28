@@ -13,7 +13,9 @@ namespace finale
 
 		public Localisation DepartBallons { get; private set;}
 
-		public Caze GetCase (int col, int line);
+		public Caze GetCase (int col, int line){
+			return null;
+		}
 
 
 		public Problem (int nbLines, int nbCols, int nbAltitudes, int rayonCouverture, int nbTours, Localisation departBallons /*TODO: cazes*/)
