@@ -15,6 +15,7 @@ namespace finale
 		{
 			Winds = new Vector[altitudeMax+1];
 			Winds [0] = Vector.EmptyVector;
+			IsTrap = new bool[9];
 		}
 	}
 }

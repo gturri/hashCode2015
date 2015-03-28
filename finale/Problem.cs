@@ -45,6 +45,57 @@ namespace finale
 			NbAvailableBallons = nbAvailableBallons;
 
 			BuildTargets ();
+
+			CheckTraps ();
+		}
+
+		void CheckTraps ()
+		{
+			bool cazeMarked = false;
+			int traps = 0;
+
+			do
+			{
+				cazeMarked = false;
+				for (int r = 0; r < 75; r++)
+				{
+					for (int c = 0; c < 300; c++)
+					{
+						var caze = GetCaze (r, c);
+						for (int a = 0; a < 9; a++)
+						{
+							if(caze.IsTrap [a])
+								continue; //already seen
+
+							bool canEscape = false;
+							for (int d = -1; d < 2; d++)
+							{
+								if (a + d < 1 || a + d >= 9)
+									continue;
+
+								var wind = caze.Winds [a + d];
+								if (r + wind.DeltaRow < 0 || r + wind.DeltaRow >= 75)
+									continue;
+
+								var newR = r + wind.DeltaRow;
+								var newC = (c + wind.DeltaCol) % 300;
+								if(newC < 0) newC += 300;
+								if(GetCaze(newR, newC).IsTrap[a+d])
+									continue;
+
+								canEscape = true;
+								break;
+							}
+							if (!canEscape)
+							{
+								caze.IsTrap [a] = true;
+								cazeMarked = true;
+								traps++;
+							}
+						}
+					}
+				}
+			} while(cazeMarked);
 		}
 
 		private void BuildTargets(){
