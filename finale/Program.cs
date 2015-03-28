@@ -10,8 +10,10 @@ namespace finale
             var problem = Parser.Parse("../../final_round.in");
 
 
-			var solver = new Solver (problem);
-			var solution = solver.Solve(problem);
+			var solver = new GtDummySolver (problem);
+			var solution = solver.Solve();
+
+			Console.WriteLine ("score: " + Scorer.Score (solution));
 
 			Dumper.Dump (solution);
 		}
