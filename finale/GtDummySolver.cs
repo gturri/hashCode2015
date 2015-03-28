@@ -21,7 +21,7 @@ namespace finale
 				}
 				sol.Moves.Add (commands.ToArray ());
 			}
-			return sol;
+		    return sol;
 		}
 	}
 }
