@@ -29,9 +29,11 @@ namespace finale
 
 			//targets
 			List<Localisation> targets = new List<Localisation> ();
-			for (int line = 3; line < 3 + AttributeTargets; line ++) {
-
+			for (int line = 3; line < 3 + nbCibles; line ++) {
+				String[] targetLine = text [line].Split (' ');
+				targets.Add(new Localisation(line: int.Parse(targetLine[0]), col: int.Parse(targetLine[1])));
 			}
+
 		}
 	}
 }
