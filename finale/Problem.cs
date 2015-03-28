@@ -58,5 +58,10 @@ namespace finale
 			}
 			return reached;
 		}
+
+		public int GetTargetsReachedFrom(int r, int c)
+		{
+			return GetCazesReachedFrom (r, c).Count;
+		}
 	}
 }
