@@ -62,10 +62,9 @@ namespace finale
         }
 
 
-
+        // !!!! do not cover the same target twice if possible
 	    private KeyValuePair<int, Localisation> GetNextAltAndLocation(Balloon balloon)
 	    {
-            // !!!! do not cover the same target twice if possible
 	        var nextPossiblePositions = Problem.FindNextPossiblePostions(_problem, balloon.Location, balloon.Altitude);
             
             // out of those 3, excluse those that that have negative loc (out)
@@ -80,6 +79,7 @@ namespace finale
                 altitudeChangeToScoreAndLoc.Add(-1, new Tuple<int, Localisation>(
                     _problem.GetNbTargetsReachedFrom(nextPossiblePositions[0].Line, nextPossiblePositions[0].Col),
                     new Localisation(nextPossiblePositions[0].Line, nextPossiblePositions[0].Col)));
+
             if (nextPossiblePositions[1] != null)
                 altitudeChangeToScoreAndLoc.Add(0, new Tuple<int, Localisation>(
                     _problem.GetNbTargetsReachedFrom(nextPossiblePositions[1].Line, nextPossiblePositions[1].Col),

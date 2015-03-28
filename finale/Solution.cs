@@ -29,7 +29,7 @@ namespace finale
 		public void RegisterBaloonMove(int ballonIdx, int move)
 		{
 			System.Diagnostics.Debug.Assert (move < 2 && move > -2);
-			System.Diagnostics.Debug.Assert (ballonIdx > 0 && ballonIdx < 53);
+			System.Diagnostics.Debug.Assert (ballonIdx >= 0 && ballonIdx < 53);
 
 			Moves [currentTurn] [ballonIdx] = move;
 

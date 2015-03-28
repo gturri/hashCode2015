@@ -44,7 +44,6 @@
     <Compile Include="Caze.cs" />
     <Compile Include="Localisation.cs" />
     <Compile Include="Solution.cs" />
-    <Compile Include="Scorer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
