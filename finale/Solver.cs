@@ -18,7 +18,7 @@ namespace finale
             var balloons = InitializeBalloons();
 
 
-            while (solution.currentTurn < _problem.NbTours - 1)
+            while (solution.currentTurn < _problem.NbTours)
             {
                 balloons = PlayTurn(balloons, solution);
             }
@@ -43,6 +43,7 @@ namespace finale
         {
             // create new result structure
             solution.Moves.Add(new int[53]);
+            _targetsCoveredThisTurn = new List<Localisation>();
 
             for (int b = 0; b < balloons.Length; b++)
 			{
@@ -56,13 +57,15 @@ namespace finale
 				// dump move in soluton at current turn
 				solution.RegisterBaloonMove (b, deltaAlt);
 			}
-/*
-            foreach (var alt in solution.Moves[solution.currentTurn])
+
+            foreach (var s in solution.Moves[solution.currentTurn])
             {
-                Console.Write(alt + " ");
-            }*/
+                Console.Write(s + " ");
+            }
+            Console.WriteLine();
+
+
             solution.currentTurn++;
-            //Console.WriteLine();
             return balloons;
         }
 
@@ -85,9 +88,12 @@ namespace finale
 			return new KeyValuePair<int, Localisation> (move, newPos);
 		}
 
+
+
+	    private List<Localisation> _targetsCoveredThisTurn; 
+
 	    private KeyValuePair<int, Localisation> GetNextAltAndLocation(Balloon balloon)
 	    {
-            // !!!! do not cover the same target twice if possible
 	        var nextPossiblePositions = Problem.FindNextPossiblePostions(_problem, balloon.Location, balloon.Altitude);
 
             // out of those 3, excluse those that that have negative loc (out)
@@ -96,32 +102,70 @@ namespace finale
                     nextPossiblePositions[i] = null;
 
 
-            // and pick the one with the most cover
-	        var altitudeChangeToScoreAndLoc = new Dictionary<int, Tuple<int, Localisation>>();
+            // and pick the one with the most cover for uncovered targets
+	        int scoremin1 = -1;
+            int score0 = -1;
+	        int scoremax1 = -1;
             if (nextPossiblePositions[0] != null)
-                altitudeChangeToScoreAndLoc.Add(-1, new Tuple<int, Localisation>(
-                    _problem.GetNbTargetsReachedFrom(nextPossiblePositions[0].Line, nextPossiblePositions[0].Col),
-                    new Localisation(nextPossiblePositions[0].Line, nextPossiblePositions[0].Col)));
-            if (nextPossiblePositions[1] != null)
-                altitudeChangeToScoreAndLoc.Add(0, new Tuple<int, Localisation>(
-                    _problem.GetNbTargetsReachedFrom(nextPossiblePositions[1].Line, nextPossiblePositions[1].Col),
-                    new Localisation(nextPossiblePositions[1].Line, nextPossiblePositions[1].Col)));
-
+	            scoremin1 = _problem.GetListOfTargetReachedFrom(nextPossiblePositions[0].Line, nextPossiblePositions[0].Col).Count - _targetsCoveredThisTurn.Count;
+	        if (nextPossiblePositions[1] != null)
+                score0 = _problem.GetListOfTargetReachedFrom(nextPossiblePositions[1].Line, nextPossiblePositions[1].Col).Count - _targetsCoveredThisTurn.Count;
             if (nextPossiblePositions[2] != null)
-                altitudeChangeToScoreAndLoc.Add(1, new Tuple<int, Localisation>(
-                    _problem.GetNbTargetsReachedFrom(nextPossiblePositions[2].Line, nextPossiblePositions[2].Col),
-                    new Localisation(nextPossiblePositions[2].Line, nextPossiblePositions[2].Col)));
+                scoremax1 = _problem.GetListOfTargetReachedFrom(nextPossiblePositions[2].Line, nextPossiblePositions[2].Col).Count - _targetsCoveredThisTurn.Count;
+
+            // if there is a positive score (cover an uncover target !), use those scores
+            // else use the score to cover the most targets
+            var altitudeChangeToScoreAndLoc = new Dictionary<int, Tuple<int, Localisation>>();
+            if (scoremin1 > 0 || score0 > 0 || scoremax1 > 0)
+            {
+                
+                if (nextPossiblePositions[0] != null)
+                    altitudeChangeToScoreAndLoc.Add(-1, new Tuple<int, Localisation>(
+                        scoremin1,
+                        new Localisation(nextPossiblePositions[0].Line, nextPossiblePositions[0].Col)));
+                if (nextPossiblePositions[1] != null)
+                    altitudeChangeToScoreAndLoc.Add(0, new Tuple<int, Localisation>(
+                        score0,
+                        new Localisation(nextPossiblePositions[1].Line, nextPossiblePositions[1].Col)));
+                if (nextPossiblePositions[2] != null)
+                    altitudeChangeToScoreAndLoc.Add(1, new Tuple<int, Localisation>(
+                        scoremax1,
+                        new Localisation(nextPossiblePositions[2].Line, nextPossiblePositions[2].Col)));
+            }
+            else
+            {
+                if (nextPossiblePositions[0] != null)
+                    altitudeChangeToScoreAndLoc.Add(-1, new Tuple<int, Localisation>(
+                        _problem.GetNbTargetsReachedFrom(nextPossiblePositions[0].Line, nextPossiblePositions[0].Col),
+                        new Localisation(nextPossiblePositions[0].Line, nextPossiblePositions[0].Col)));
+                if (nextPossiblePositions[1] != null)
+                    altitudeChangeToScoreAndLoc.Add(0, new Tuple<int, Localisation>(
+                        _problem.GetNbTargetsReachedFrom(nextPossiblePositions[1].Line, nextPossiblePositions[1].Col),
+                        new Localisation(nextPossiblePositions[1].Line, nextPossiblePositions[1].Col)));
+                if (nextPossiblePositions[2] != null)
+                    altitudeChangeToScoreAndLoc.Add(1, new Tuple<int, Localisation>(
+                        _problem.GetNbTargetsReachedFrom(nextPossiblePositions[2].Line, nextPossiblePositions[2].Col),
+                        new Localisation(nextPossiblePositions[2].Line, nextPossiblePositions[2].Col)));
+            }
 
 	        int maxScore = -1;
 	        var maxEntry = new KeyValuePair<int, Localisation>(0, new Localisation(-1, -1));
 	        foreach (var kvp in altitudeChangeToScoreAndLoc)
 	        {
-	            if (kvp.Value .Item1>= maxScore) // /!\ introduction d'un biais vers les hautes altitudes grace à >=
+	            if (kvp.Value .Item1 >= maxScore) // /!\ introduction d'un biais vers les hautes altitudes grace à >=
 	            {
 	                maxScore = kvp.Value.Item1;
 	                maxEntry = new KeyValuePair<int, Localisation>(kvp.Key, kvp.Value.Item2);
 	            }
 	        }
+
+            // we select the maxEntry for this balloon next turn : 
+            // mark all covered targets as out for the next turn
+            foreach (var localisation in _problem.GetListOfTargetReachedFrom(maxEntry.Value.Line, maxEntry.Value.Col))
+                _targetsCoveredThisTurn.Add(localisation);
+            
+            
+
 
 	        return maxEntry;
 	    }

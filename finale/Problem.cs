@@ -92,6 +92,16 @@ namespace finale
 			return GetCazesReachedFrom (r, c).Count(loc => GetCaze(loc).IsTarget);
 		}
 
+        public List<Localisation> GetListOfTargetReachedFrom(int r, int c)
+        {
+            return GetCazesReachedFrom(r, c).Where(loc => GetCaze(loc).IsTarget).ToList();
+        }
+
+        /*public int GetNbTargetsReachedFromWhileIgnoringList(int r, int c, List<Localisation>  targetsAlreadyCovered)
+        {
+            return GetCazesReachedFrom(r, c).Count(loc => GetCaze(loc).IsTarget && !targetsAlreadyCovered.Contains(loc));
+        }*/
+
 
         // Give all 3 possible postions for a baloon at next turn in that order :
         // if altitude -1, if stable, if altitude +1
