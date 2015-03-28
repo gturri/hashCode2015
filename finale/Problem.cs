@@ -23,10 +23,12 @@ namespace finale
             return _cazes[r][c];
 		}
 
+		public int NbAvailableBallons { get; private set; }
+
 		private List<List<Caze>> _cazes;
 
 
-		public Problem (int nbLines, int nbCols, int nbAltitudes, int rayonCouverture, int nbTours, Localisation departBallons, List<List<Caze>> cazes)
+		public Problem (int nbLines, int nbCols, int nbAltitudes, int rayonCouverture, int nbTours, Localisation departBallons, List<List<Caze>> cazes, int nbAvailableBallons)
 		{
 			NbLines = nbLines;
 			NbCols = nbCols;
@@ -37,6 +39,8 @@ namespace finale
 
 			DepartBallons = departBallons;
 			_cazes = cazes;
+
+			NbAvailableBallons = nbAvailableBallons;
 		}
 
 		public List<Caze> GetCazesReachedFrom(int r, int c)

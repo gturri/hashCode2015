@@ -62,7 +62,7 @@ namespace finale
 				}
 			}
 
-			return new Problem (nbLines, nbCols, nbAltitudes, rayonCouverture, nbToursSimu, departBallon, cazes);
+			return new Problem (nbLines, nbCols, nbAltitudes, rayonCouverture, nbToursSimu, departBallon, cazes, nbAvailableBallons);
 		}
 	}
 }
