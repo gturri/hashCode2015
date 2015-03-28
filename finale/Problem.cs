@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace finale
 {
@@ -63,9 +64,9 @@ namespace finale
 			return reached;
 		}
 
-		public int GetTargetsReachedFrom(int r, int c)
+		public int GetNbTargetsReachedFrom(int r, int c)
 		{
-			return GetCazesReachedFrom (r, c).Count;
+			return GetCazesReachedFrom (r, c).Count(caze => caze.IsTarget);
 		}
 	}
 }
