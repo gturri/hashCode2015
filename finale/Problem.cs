@@ -62,8 +62,16 @@ namespace finale
 			return GetCazesReachedFrom (loc.Line, loc.Col);
 		}
 
+		Dictionary<Localisation, List<Localisation>> _cache = new Dictionary<Localisation, List<Localisation>>();
+
 		public List<Localisation> GetCazesReachedFrom(int r, int c)
 		{
+			List<Localisation> fromCache;
+			Localisation cacheKey = new Localisation (r, c);
+			if (_cache.TryGetValue (cacheKey, out fromCache)) {
+				return fromCache;
+			}
+
 			var reached = new List<Localisation> ();
 			for (int i = -6; i < 7; i++)
 			{
@@ -84,6 +92,7 @@ namespace finale
 					reached.Add (new Localisation(cazeR, cazeC));
 				}
 			}
+			_cache.Add (cacheKey, reached);
 			return reached;
 		}
 
