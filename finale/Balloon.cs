@@ -9,5 +9,11 @@ namespace finale
     {
         public int Altitude {get; set; }
         public Localisation Location { get; set; }
+
+        public Balloon(int altitude, Localisation location)
+        {
+            Altitude = altitude;
+            Location = location;
+        }
     }
 }

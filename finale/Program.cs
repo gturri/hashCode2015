@@ -9,11 +9,6 @@ namespace finale
 		{
             var problem = Parser.Parse("../../final_round.in");
 
-            // Display map
-		    var mapPrinter = new MapPrinter();
-            mapPrinter.PrintMap(problem);
-
-
 
 			var solver = new Solver (problem);
 			var solution = solver.Solve(problem);
