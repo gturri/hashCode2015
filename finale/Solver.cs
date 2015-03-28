@@ -26,12 +26,12 @@ namespace finale
 		    return solution;
 		}
 
-        private Dictionary<int, Balloon> InitializeBalloons()
+        private Balloon[] InitializeBalloons()
 	    {
-	        var balloons = new Dictionary<int, Balloon>();
+	        var balloons = new Balloon[53];
             for (int i = 0; i < 53; i++)
             {
-                balloons.Add(i, new Balloon(0, _problem.DepartBallons));
+                balloons[i] =  new Balloon(0, _problem.DepartBallons);
             }
 	        return balloons;
 	    }
@@ -39,25 +39,24 @@ namespace finale
 
 	    // play 1 turn by moving all baloons
         // modify variables inplace :(
-        public Dictionary<int, Balloon> PlayTurn(Dictionary<int, Balloon> balloons, Solution solution)
+        public Balloon[] PlayTurn(Balloon[] balloons, Solution solution)
         {
             // create new result structure
             solution.currentTurn++;
             solution.Moves[solution.currentTurn] = new int[53];
 
-            foreach (var balloon in balloons)
-            {
-                // find out next position for balloon
-                KeyValuePair<int, Localisation> newAltAndLocation = GetNextAltAndLocation(balloon.Value);
-                var deltaAlt = balloon.Value.Altitude - newAltAndLocation.Key;
-
-                // update coordinates
-                balloon.Value.Altitude = newAltAndLocation.Key;
-                balloon.Value.Location = newAltAndLocation.Value;
-
-                // dump move in soluton at current turn
-                solution.RegisterBaloonMove(balloon.Key, deltaAlt);
-            }
+            for (int b = 0; b < balloons.Length; b++)
+			{
+				var balloon = balloons [b];
+				// find out next position for balloon
+				KeyValuePair<int, Localisation> newAltAndLocation = GetNextAltAndLocation (balloon);
+				var deltaAlt = balloon.Altitude - newAltAndLocation.Key;
+				// update coordinates
+				balloon.Altitude = newAltAndLocation.Key;
+				balloon.Location = newAltAndLocation.Value;
+				// dump move in soluton at current turn
+				solution.RegisterBaloonMove (b, deltaAlt);
+			}
 
             return balloons;
         }
