@@ -94,6 +94,10 @@ namespace finale
 
 	    private KeyValuePair<int, Localisation> GetNextAltAndLocation(Balloon balloon)
 	    {
+	        if (balloon.Location.Line == -1 || balloon.Location.Col == -1)
+                return new KeyValuePair<int, Localisation>(0, new Localisation(-1, -1));
+
+
 	        var nextPossiblePositions = Problem.FindNextPossiblePostions(_problem, balloon.Location, balloon.Altitude);
 
             // out of those 3, excluse those that that have negative loc (out)
@@ -107,13 +111,13 @@ namespace finale
             int score0 = -1;
 	        int scoremax1 = -1;
             if (nextPossiblePositions[0] != null)
-	            scoremin1 = _problem.GetListOfTargetReachedFrom(nextPossiblePositions[0].Line, nextPossiblePositions[0].Col).Count - _targetsCoveredThisTurn.Count;
+                scoremin1 = _problem.GetNbTargetsReachedFromWhileIgnoringList(nextPossiblePositions[0].Line, nextPossiblePositions[0].Col, _targetsCoveredThisTurn);
 	        if (nextPossiblePositions[1] != null)
-                score0 = _problem.GetListOfTargetReachedFrom(nextPossiblePositions[1].Line, nextPossiblePositions[1].Col).Count - _targetsCoveredThisTurn.Count;
+                score0 = _problem.GetNbTargetsReachedFromWhileIgnoringList(nextPossiblePositions[1].Line, nextPossiblePositions[1].Col, _targetsCoveredThisTurn);
             if (nextPossiblePositions[2] != null)
-                scoremax1 = _problem.GetListOfTargetReachedFrom(nextPossiblePositions[2].Line, nextPossiblePositions[2].Col).Count - _targetsCoveredThisTurn.Count;
+                scoremax1 = _problem.GetNbTargetsReachedFromWhileIgnoringList(nextPossiblePositions[2].Line, nextPossiblePositions[2].Col, _targetsCoveredThisTurn);
 
-            // if there is a positive score (cover an uncover target !), use those scores
+            // if there is a positive score (cover an uncovered target !), use those scores
             // else use the score to cover the most targets
             var altitudeChangeToScoreAndLoc = new Dictionary<int, Tuple<int, Localisation>>();
             if (scoremin1 > 0 || score0 > 0 || scoremax1 > 0)
@@ -132,7 +136,7 @@ namespace finale
                         scoremax1,
                         new Localisation(nextPossiblePositions[2].Line, nextPossiblePositions[2].Col)));
             }
-            else
+            else // no new nodes covered : go to the location with the most nodes
             {
                 if (nextPossiblePositions[0] != null)
                     altitudeChangeToScoreAndLoc.Add(-1, new Tuple<int, Localisation>(
@@ -148,6 +152,9 @@ namespace finale
                         new Localisation(nextPossiblePositions[2].Line, nextPossiblePositions[2].Col)));
             }
 
+
+
+            // return the move with the best score
 	        int maxScore = -1;
 	        var maxEntry = new KeyValuePair<int, Localisation>(0, new Localisation(-1, -1));
 	        foreach (var kvp in altitudeChangeToScoreAndLoc)
@@ -163,9 +170,6 @@ namespace finale
             // mark all covered targets as out for the next turn
             foreach (var localisation in _problem.GetListOfTargetReachedFrom(maxEntry.Value.Line, maxEntry.Value.Col))
                 _targetsCoveredThisTurn.Add(localisation);
-            
-            
-
 
 	        return maxEntry;
 	    }
