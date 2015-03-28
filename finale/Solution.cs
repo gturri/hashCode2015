@@ -11,6 +11,7 @@ namespace finale
 		Problem problem;
 
 		public Localisation[] BaloonsPositions = new Localisation[53];
+		public int[] BaloonsAltitude = new int[53];
 
 		public Solution (Problem problem)
 		{
@@ -23,7 +24,7 @@ namespace finale
 			}
 		}
 
-		public void MoveBalloon(int ballonIdx, int move)
+		public void RegisterBaloonMove(int ballonIdx, int move)
 		{
 			System.Diagnostics.Debug.Assert (move < 2 && move > -2);
 			System.Diagnostics.Debug.Assert (ballonIdx > 0 && ballonIdx < 53);
