@@ -76,24 +76,48 @@ namespace finale
 
         // Give all 3 possible postions for a baloon at next turn in that order :
         // if altitude -1, if stable, if altitude +1
-        // !!! still buggy !!!
         public static List<Localisation> FindNextPossiblePostions(Problem problem, Localisation currentLoc, int currentAltitude)
         {
             // check winds at current
             var possiblePositions = new List<Localisation>();
 
+            // -------- Altitude -1 -----------
+            if ((currentAltitude - 1) <= 0)
+                possiblePositions.Add(new Localisation(-1, -1));
+            else
+            {
+                var nextLine = currentLoc.Line + problem.GetCaze(currentLoc).Winds[currentAltitude - 1].DeltaRow;
+                if (nextLine > problem.NbLines || nextLine < 0)
+                    possiblePositions.Add(new Localisation(-1, -1));
+                else
+                {
+                    int nextCaseAltmin1Col = (currentLoc.Col + problem.GetCaze(currentLoc).Winds[currentAltitude - 1].DeltaCol) % problem.NbCols;
+                    possiblePositions.Add(new Localisation(nextLine, nextCaseAltmin1Col));
+                }
+            }
 
-            int nextCaseAltmin1Line = currentLoc.Line + problem.GetCaze(currentLoc).Winds[currentAltitude - 1].DeltaRow; // add out if needed
-            int nextCaseAltmin1Col = (currentLoc.Col + problem.GetCaze(currentLoc).Winds[currentAltitude - 1].DeltaCol) % problem.NbCols;
-            possiblePositions.Add(new Localisation(nextCaseAltmin1Line, nextCaseAltmin1Col));
-
-            int nextCaseAlt0Line = currentLoc.Line + problem.GetCaze(currentLoc).Winds[currentAltitude].DeltaRow; // add out if needed
+            // ---------- Altitude 0 -----------
+            int nextCaseAlt0Line = currentLoc.Line + problem.GetCaze(currentLoc).Winds[currentAltitude].DeltaRow;
             int nextCaseAlt0Col = (currentLoc.Col + problem.GetCaze(currentLoc).Winds[currentAltitude].DeltaCol) % problem.NbCols;
             possiblePositions.Add(new Localisation(nextCaseAlt0Line, nextCaseAlt0Col));
 
-            int nextCaseAltmax1Line = currentLoc.Line + problem.GetCaze(currentLoc).Winds[currentAltitude + 1].DeltaRow; // add out if needed
-            int nextCaseAltmax1Col = (currentLoc.Col + problem.GetCaze(currentLoc).Winds[currentAltitude + 1].DeltaCol) % problem.NbCols;
-            possiblePositions.Add(new Localisation(nextCaseAltmax1Line, nextCaseAltmax1Col));
+
+            // ---------- Altitude +1 ------------
+            if (currentAltitude + 1 > 8)
+            {
+                possiblePositions.Add(new Localisation(-1, -1));
+            }
+            else
+            {
+                var nextLine = currentLoc.Line + problem.GetCaze(currentLoc).Winds[currentAltitude + 1].DeltaRow;
+                if (nextLine > problem.NbLines || nextLine < 0)
+                    possiblePositions.Add(new Localisation(-1, -1));
+                else
+                {
+                    int nextCaseAltmax1Col = (currentLoc.Col + problem.GetCaze(currentLoc).Winds[currentAltitude + 1].DeltaCol) % problem.NbCols;
+                    possiblePositions.Add(new Localisation(nextLine, nextCaseAltmax1Col));
+                }
+            }
 
             return possiblePositions;
         }
