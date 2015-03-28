@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Collections.Generic;
 
 namespace finale
 {
@@ -25,6 +26,12 @@ namespace finale
 			//3rd line
 			string[] thirdLine = text [2].Split (' ');
 			Localisation departBallon = new Localisation (line: int.Parse (thirdLine [0]), col: int.Parse (thirdLine [1]));
+
+			//targets
+			List<Localisation> targets = new List<Localisation> ();
+			for (int line = 3; line < 3 + AttributeTargets; line ++) {
+
+			}
 		}
 	}
 }

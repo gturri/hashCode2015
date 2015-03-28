@@ -13,7 +13,9 @@ namespace finale
 
 		public Localisation DepartBallons { get; private set;}
 
-		public Problem (int nbLines, int nbCols, int nbAltitudes, int rayonCouverture, int nbTours, Localisation departBallons)
+		public Localisation[] Targets { get; private set;}
+
+		public Problem (int nbLines, int nbCols, int nbAltitudes, int rayonCouverture, int nbTours, Localisation departBallons, Localisation[] targets)
 		{
 			NbLines = nbLines;
 			NbCols = nbCols;
@@ -23,7 +25,7 @@ namespace finale
 			NbTours = nbTours;
 
 			DepartBallons = departBallons;
-
+			Targets = targets;
 		}
 	}
 }
