@@ -4,9 +4,9 @@ namespace finale
 {
 	public class Parser
 	{
-		public static object Parse ()
+		public static Problem Parse ()
 		{
-			throw new NotImplementedException ();
+			return null;
 		}
 	}
 }
