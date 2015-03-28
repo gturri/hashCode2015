@@ -14,9 +14,9 @@ namespace finale
                 for (int col = 0; col < problem.NbCols; col++)
                 {
                     bool target = false;
-                    foreach (var localisation in problem.Targets)
-                        if (localisation.Col == col && localisation.Line == row)
-                            target = true;
+					if (problem.GetCaze (row, col).IsTarget) {
+						target = true;
+					}
 
                     if (target)
                         Console.Write("x");

@@ -32,7 +32,7 @@ namespace finale
 			for (int l = 0; l < nbLines; l++) {
 				List<Caze> newLine = new List<Caze> ();
 				for (int c = 0; c < nbCols; c++) {
-					newLine.Add (new Caze ());
+					newLine.Add (new Caze (nbAltitudes));
 				}
 				cazes.Add (newLine);
 			}
@@ -49,7 +49,7 @@ namespace finale
 			for (int altitude=1; altitude <= nbAltitudes; altitude++) {
 				for (int lineForGivenAltitude = 0; lineForGivenAltitude < nbLines; lineForGivenAltitude++) {
 					line++;
-					string altitudeLineStr = text [line];
+					string[] altitudeLineStr = text [line].Split (' ');
 				
 					int charIdx = 0;
 					for (int c=0; c < nbCols; c++) {

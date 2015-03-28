@@ -7,9 +7,9 @@ namespace finale
 		public Vector[] Winds { get; set; }
 		public bool IsTarget { get; set; }
 
-		public Caze (int altitude)
+		public Caze (int altitudeMax)
 		{
-			Winds = new Vector[altitude+1];
+			Winds = new Vector[altitudeMax+1];
 			Winds [0] = Vector.EmptyVector;
 		}
 	}
