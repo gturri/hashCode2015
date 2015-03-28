@@ -9,9 +9,10 @@ namespace finale
 			throw new NotImplementedException ();
 		}
 
-		public object Solve ()
+		public Solution Solve ()
 		{
 			throw new NotImplementedException ();
 		}
 	}
 }
+
