@@ -13,9 +13,10 @@ namespace finale
 
 		public Localisation DepartBallons { get; private set;}
 
-		public Localisation[] Targets { get; private set;}
+		public Caze GetCase (int col, int line);
 
-		public Problem (int nbLines, int nbCols, int nbAltitudes, int rayonCouverture, int nbTours, Localisation departBallons, Localisation[] targets)
+
+		public Problem (int nbLines, int nbCols, int nbAltitudes, int rayonCouverture, int nbTours, Localisation departBallons /*TODO: cazes*/)
 		{
 			NbLines = nbLines;
 			NbCols = nbCols;
@@ -25,7 +26,6 @@ namespace finale
 			NbTours = nbTours;
 
 			DepartBallons = departBallons;
-			Targets = targets;
 		}
 	}
 }

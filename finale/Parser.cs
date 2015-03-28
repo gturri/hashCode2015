@@ -34,6 +34,8 @@ namespace finale
 				targets.Add(new Localisation(line: int.Parse(targetLine[0]), col: int.Parse(targetLine[1])));
 			}
 
+			//Winds
+
 		}
 	}
 }
