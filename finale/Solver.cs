@@ -58,11 +58,11 @@ namespace finale
 				solution.RegisterBaloonMove (b, deltaAlt);
 			}
 
-            foreach (var s in solution.Moves[solution.currentTurn])
+           /* foreach (var s in solution.Moves[solution.currentTurn])
             {
                 Console.Write(s + " ");
             }
-            Console.WriteLine();
+            Console.WriteLine();*/
 
 
             solution.currentTurn++;
