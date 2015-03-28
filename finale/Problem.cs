@@ -15,7 +15,7 @@ namespace finale
 		public Localisation DepartBallons { get; private set;}
 
 		public Caze GetCase (int col, int line){
-			return null;
+			return _cazes [line] [col]; //yes, col then line; sorry about that (but public API is ok)
 		}
 
 		private List<List<Caze>> _cazes;

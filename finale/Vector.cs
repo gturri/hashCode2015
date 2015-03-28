@@ -12,5 +12,9 @@ namespace finale
 			DeltaRow = deltaRow;
 			DeltaCol = deltaCol;
 		}
+
+		private static Vector _emptyVector = new Vector(0, 0);
+
+		public static Vector EmptyVector {get {return _emptyVector; }}
 	}
 }

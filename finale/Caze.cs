@@ -12,7 +12,7 @@ namespace finale
 		public Caze (int altitude)
 		{
 			Winds = new Vector[altitude+1];
-			//TODO: add empty vector at altitude 0
+			Winds [0] = Vector.EmptyVector;
 		}
 	}
 }
