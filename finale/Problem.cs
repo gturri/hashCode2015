@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace finale
 {
@@ -17,8 +18,10 @@ namespace finale
 			return null;
 		}
 
+		private List<List<Caze>> _cazes;
 
-		public Problem (int nbLines, int nbCols, int nbAltitudes, int rayonCouverture, int nbTours, Localisation departBallons /*TODO: cazes*/)
+
+		public Problem (int nbLines, int nbCols, int nbAltitudes, int rayonCouverture, int nbTours, Localisation departBallons, List<List<Caze>> cazes)
 		{
 			NbLines = nbLines;
 			NbCols = nbCols;
@@ -28,6 +31,7 @@ namespace finale
 			NbTours = nbTours;
 
 			DepartBallons = departBallons;
+			_cazes = cazes;
 		}
 	}
 }

@@ -28,13 +28,39 @@ namespace finale
 			Localisation departBallon = new Localisation (line: int.Parse (thirdLine [0]), col: int.Parse (thirdLine [1]));
 
 			//targets
-			List<Localisation> targets = new List<Localisation> ();
-			for (int line = 3; line < 3 + nbCibles; line ++) {
+			List<List<Caze>> cazes = new List<List<Caze>> ();
+			for (int l = 0; l < nbLines; l++) {
+				List<Caze> newLine = new List<Caze> ();
+				for (int c = 0; c < nbCols; c++) {
+					newLine.Add (new Caze ());
+				}
+				cazes.Add (newLine);
+			}
+
+			int line = 3;
+			for (; line < 3 + nbCibles; line ++) {
 				String[] targetLine = text [line].Split (' ');
-				targets.Add(new Localisation(line: int.Parse(targetLine[0]), col: int.Parse(targetLine[1])));
+				int lineTarget = int.Parse(targetLine[0]);
+				int colTarget = int.Parse(targetLine[1]);
+				cazes [lineTarget] [colTarget].IsTarget = true;
 			}
 
 			//Winds
+			for (int altitude=1; altitude <= nbAltitudes; altitude++) {
+				for (int lineForGivenAltitude = 0; lineForGivenAltitude < nbLines; lineForGivenAltitude++) {
+					line++;
+					string altitudeLineStr = text [line];
+				
+					int charIdx = 0;
+					for (int c=0; c < nbCols; c++) {
+						int deltaRow = int.Parse (altitudeLineStr [charIdx]);
+						int deltaCol = int.Parse (altitudeLineStr [charIdx + 1]);
+						charIdx += 2;
+
+						cazes [lineForGivenAltitude] [c].Winds [altitude] = new Vector(deltaRow, deltaCol);
+					}
+				}
+			}
 
 		}
 	}
