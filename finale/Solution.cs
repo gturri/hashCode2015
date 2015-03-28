@@ -7,7 +7,7 @@ namespace finale
 	{
 		public List<int[]> Moves = new List<int[]>(400);
 
-		int currentTurn = 0;
+		public int currentTurn = 0;
 		public Problem problem { get; private set; }
 
 		public Localisation[] BaloonsPositions = new Localisation[53];
