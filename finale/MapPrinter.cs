@@ -13,12 +13,8 @@ namespace finale
             {
                 for (int col = 0; col < problem.NbCols; col++)
                 {
-                    bool target = false;
-					if (problem.GetCaze (row, col).IsTarget) {
-						target = true;
+                    if (problem.GetCase(row, col).IsTarget)
 					}
-
-                    if (target)
                         Console.Write("x");
                     else
                         Console.Write(".");

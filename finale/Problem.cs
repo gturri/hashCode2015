@@ -72,5 +72,31 @@ namespace finale
 		{
 			return GetCazesReachedFrom (r, c).Count(caze => caze.IsTarget);
 		}
+
+
+        // Give all 3 possible postions for a baloon at next turn in that order :
+        // if altitude -1, if stable, if altitude +1
+        // !!! still buggy !!!
+        public static List<Localisation> FindNextPossiblePostions(Problem problem, Localisation currentLoc, int currentAltitude)
+        {
+            // check winds at current
+            var possiblePositions = new List<Localisation>();
+
+
+            int nextCaseAltmin1Line = currentLoc.Line + problem.GetCaze(currentLoc).Winds[currentAltitude - 1].DeltaRow; // add out if needed
+            int nextCaseAltmin1Col = (currentLoc.Col + problem.GetCaze(currentLoc).Winds[currentAltitude - 1].DeltaCol) % problem.NbCols;
+            possiblePositions.Add(new Localisation(nextCaseAltmin1Line, nextCaseAltmin1Col));
+
+            int nextCaseAlt0Line = currentLoc.Line + problem.GetCaze(currentLoc).Winds[currentAltitude].DeltaRow; // add out if needed
+            int nextCaseAlt0Col = (currentLoc.Col + problem.GetCaze(currentLoc).Winds[currentAltitude].DeltaCol) % problem.NbCols;
+            possiblePositions.Add(new Localisation(nextCaseAlt0Line, nextCaseAlt0Col));
+
+            int nextCaseAltmax1Line = currentLoc.Line + problem.GetCaze(currentLoc).Winds[currentAltitude + 1].DeltaRow; // add out if needed
+            int nextCaseAltmax1Col = (currentLoc.Col + problem.GetCaze(currentLoc).Winds[currentAltitude + 1].DeltaCol) % problem.NbCols;
+            possiblePositions.Add(new Localisation(nextCaseAltmax1Line, nextCaseAltmax1Col));
+
+            return possiblePositions;
+        }
+
 	}
 }
