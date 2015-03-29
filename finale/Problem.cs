@@ -127,9 +127,9 @@ namespace finale
 			}
 
 			var reached = new List<Localisation> ();
-            for (short i = -6; i < 7; i++)
+            for (short i = -7; i <= 7; i++)
 			{
-                for (short j = -6; j < 7; j++)
+                for (short j = -7; j <= 7; j++)
 				{
 					if (i * i + j * j > 7 * 7)
 						continue; //not in range
