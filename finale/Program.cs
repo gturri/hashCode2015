@@ -13,10 +13,10 @@ namespace finale
             var problem = Parser.Parse("../../final_round.in");
 
 			int max = -1;
-			bool infinite = true;
+			bool infinite = false;
 			do
 			{
-				var solver = new Solver (problem);
+				var solver = new DynaSolver(problem);
 				var solution = solver.Solve (problem);
 
 				var score = Scorer.Score (solution);
