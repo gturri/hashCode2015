@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace finale
 {
@@ -23,11 +24,18 @@ namespace finale
             //init t0
 		    prevScores[problem.DepartBallons.Line, problem.DepartBallons.Col, 0] = problem.GetNbTargetsReachedFrom(problem.DepartBallons.Line, problem.DepartBallons.Col);
 
+#if DRAW
+            var turnImg = new Bitmap(300, 75);
+		    for (int i = 0; i < 300; i++)
+		    {
+		        for (int j = 0; j < 75; j++)
+		        {
+		            turnImg.SetPixel(i, j, Color.Black);
+		        }
+		    }
+#endif
 		    for (int t = 1 /*turn 0 is hardcoded above*/; t < problem.NbTours; t++)
             {
-#if DRAW
-                var turnImg = new Bitmap(300, 75);
-#endif
                 var scores = new int[problem.NbLines, problem.NbCols, 8];
                 for (int r = 0; r < problem.NbLines; r++)
 		        {
@@ -42,13 +50,13 @@ namespace finale
 		                    maxScore = Math.Max(maxScore, prevScores[r, c, a]);
 #endif
 		                    var prevScore = prevScores[r, c, a];
-		                    if (prevScore >= 0)
+		                    if (prevScore <= 0)
 		                        continue;
 
                             //try all moves from current position
 		                    var lower = a == 0 ? 0 : -1;
 		                    var upper = a == 7 ? 0 : 1;
-		                    for (int da = lower; da < upper; da++)
+		                    for (int da = lower; da <= upper; da++)
 		                    {
 		                        short newR, newC;
 		                        if (ApplyWind(r, c, a + da, out newR, out newC))
@@ -58,14 +66,17 @@ namespace finale
 		                    }
                         }
 #if DRAW
-                        int cr, cg, cb;
-                        HueToRgb((maxScore%2000)/2000.0, out cr, out cg, out cb);
-                        turnImg.SetPixel(c, r, Color.FromArgb(cr, cg, cb));
+                        if (maxScore > 0)
+                        {
+                            int cr, cg, cb;
+                            HueToRgb((maxScore%5000)/5000.0, out cr, out cg, out cb);
+                            turnImg.SetPixel(c, r, Color.FromArgb(cr, cg, cb));
+                        }
 #endif
 		            }
                 }
 #if DRAW
-                turnImg.Save(t + ".bmp");
+                turnImg.Save(t + ".png", ImageFormat.Png);
 #endif
 		        prevScores = scores;
 		    }
@@ -76,11 +87,11 @@ namespace finale
         /// <returns>false if the new location is outside of the map</returns>
         private bool ApplyWind(int r, int c, int a, out short newR, out short newC)
         {
-            var wind = _problem.GetCaze(r, c).Winds[a];
-            newR = (short) (r + wind.DeltaRow%300);
-            if (newR < 0) newR += 300;
-            newC = (short) (c + wind.DeltaRow);
-            return newC >= 0 && newC < 75;
+            var wind = _problem.GetCaze(r, c).Winds[a+1];
+            newC = (short) ((c + wind.DeltaCol)%300);
+            if (newC < 0) newC += 300;
+            newR = (short) (r + wind.DeltaRow);
+            return newR >= 0 && newR < 75;
         }
 
         void HueToRgb(double H, out int r, out int g, out int b)
