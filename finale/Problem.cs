@@ -137,7 +137,7 @@ namespace finale
 			return reached;
 		}
 
-        readonly Dictionary<Localisation, List<Localisation>> _cacheTargets = new Dictionary<Localisation, List<Localisation>>();
+        readonly List<Localisation>[,] _cacheTargets = new List<Localisation>[75,300];
 
         public int GetNbTargetsReachedFrom(short r, short c)
         {
@@ -151,20 +151,19 @@ namespace finale
 
         public List<Localisation> GetListOfTargetReachedFrom(short r, short c)
         {
-            List<Localisation> fromCache;
-            Localisation cacheKey = new Localisation(r, c);
-            if (_cacheTargets.TryGetValue(cacheKey, out fromCache))
+            List<Localisation> fromCache = _cacheTargets[r, c];
+            if (fromCache != null)
             {
                 return fromCache;
             }
 
-            List<Localisation> list = new List<Localisation>();
+            var list = new List<Localisation>();
             foreach (Localisation loc in GetCazesReachedFrom(r, c))
             {
                 if (GetCaze(loc).IsTarget) list.Add(loc);
             }
 
-            _cacheTargets.Add(cacheKey, list);
+            _cacheTargets[r,c] = list;
             return list;
         }
 
