@@ -5,12 +5,12 @@ namespace finale
 {
 	public static class Scorer
 	{
-		public static int Score (Solution solution)
+		public static int Score (Solution solution, int nbTours = 400)
 		{
 			int result = 0;
 
 			List<Balloon> ballons = BuildInitialBalloonList (solution);
-			for (int tour=0; tour < 400; tour++) {
+			for (int tour=0; tour < nbTours; tour++) {
 				UpdatePositions (solution, ballons, tour);
 				result += ComputeInstantScore (solution, ballons);
 			}
