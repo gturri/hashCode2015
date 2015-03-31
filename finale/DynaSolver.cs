@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 
@@ -18,11 +19,14 @@ namespace finale
 
 		public Solution Solve (Problem problem)
 		{
+		    var sw = Stopwatch.StartNew();
+
 		    var solution = new Solution(problem);
 
-            var prevScores = new int[problem.NbLines, problem.NbCols, 8];
+            var previousScores = new int[problem.NbLines, problem.NbCols, 8];
+            var currentScores = new int[problem.NbLines, problem.NbCols, 8];
             //init t0
-		    prevScores[problem.DepartBallons.Line, problem.DepartBallons.Col, 0] = problem.GetNbTargetsReachedFrom(problem.DepartBallons.Line, problem.DepartBallons.Col);
+		    previousScores[problem.DepartBallons.Line, problem.DepartBallons.Col, 0] = problem.GetNbTargetsReachedFrom(problem.DepartBallons.Line, problem.DepartBallons.Col);
 
 #if DRAW
             var turnImg = new Bitmap(300, 75);
@@ -37,7 +41,6 @@ namespace finale
 		    for (int t = 1 /*turn 0 is hardcoded above*/; t < problem.NbTours; t++)
             {
                 Console.WriteLine(t);
-                var scores = new int[problem.NbLines, problem.NbCols, 8];
                 for (int r = 0; r < problem.NbLines; r++)
 		        {
 		            for (int c = 0; c < problem.NbCols; c++)
@@ -48,9 +51,9 @@ namespace finale
 		                for (int a = 0; a < 8; a++)
 		                {
 #if DRAW
-		                    maxScore = Math.Max(maxScore, prevScores[r, c, a]);
+		                    maxScore = Math.Max(maxScore, previousScores[r, c, a]);
 #endif
-		                    var prevScore = prevScores[r, c, a];
+		                    var prevScore = previousScores[r, c, a];
 		                    if (prevScore <= 0)
 		                        continue;
 
@@ -61,8 +64,8 @@ namespace finale
 		                    {
 		                        short newR, newC;
 		                        if (ApplyWind(r, c, a + da, out newR, out newC))
-		                            scores[newR, newC, a + da] = Math.Max(
-		                                scores[newR, newC, a + da],
+		                            currentScores[newR, newC, a + da] = Math.Max(
+		                                currentScores[newR, newC, a + da],
 		                                prevScore + problem.GetNbTargetsReachedFrom(newR, newC));
 		                    }
                         }
@@ -79,7 +82,10 @@ namespace finale
 #if DRAW
                 turnImg.Save(t + ".png", ImageFormat.Png);
 #endif
-		        prevScores = scores;
+                //swap matrixes
+                var tmp = previousScores;
+		        previousScores = currentScores;
+                currentScores = tmp;
 		    }
 
             var max = 0;
@@ -89,14 +95,15 @@ namespace finale
 		        {
 		            for (int a = 0; a < 8; a++)
 		            {
-                        if (prevScores[r, c, a] > max)
+                        if (previousScores[r, c, a] > max)
                         {
-                            max = prevScores[r, c, a];
+                            max = previousScores[r, c, a];
                         }
 		            }
 		        }
 		    }
-		    Console.WriteLine("max = " + max);
+            Console.WriteLine("max = " + max);
+            Console.WriteLine("in " + sw.ElapsedMilliseconds + "ms");
 
 		    return solution;
 		}
