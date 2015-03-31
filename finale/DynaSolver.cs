@@ -82,14 +82,17 @@ namespace finale
 		                        short newR, newC;
 		                        if (ApplyWind(r, c, a + da, out newR, out newC))
 		                        {
-		                            currentScores[newR, newC, a + da].Score = Math.Max(
-		                                currentScores[newR, newC, a + da].Score,
-		                                prevScore.Score + problem.GetNbTargetsReachedFrom(newR, newC));
-		                            currentScores[newR, newC, a + da].Instruction = new InsctructionNode
-		                                {
-		                                    Move = da,
-		                                    Parent = prevScore.Instruction
-		                                };
+		                            int oldScore = currentScores[newR, newC, a + da].Score;
+		                            int newScore = prevScore.Score + problem.GetNbTargetsReachedFrom(newR, newC);
+		                            if (newScore > oldScore)
+		                            {
+		                                currentScores[newR, newC, a + da].Score = newScore;
+		                                currentScores[newR, newC, a + da].Instruction = new InsctructionNode
+		                                    {
+		                                        Move = da,
+		                                        Parent = prevScore.Instruction
+		                                    };
+		                            }
 		                        }
 		                    }
                         }
