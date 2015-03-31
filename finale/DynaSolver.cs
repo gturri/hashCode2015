@@ -37,9 +37,11 @@ namespace finale
             var previousScores = new ScoreAndInstruction[problem.NbLines, problem.NbCols, 8];
             var currentScores = new ScoreAndInstruction[problem.NbLines, problem.NbCols, 8];
             //init t0
-		    previousScores[problem.DepartBallons.Line, problem.DepartBallons.Col, 0] = new ScoreAndInstruction
+		    short firstR, firstC;
+		    ApplyWind(problem.DepartBallons.Line, problem.DepartBallons.Col, 0, out firstR, out firstC);
+		    previousScores[firstR, firstC, 0] = new ScoreAndInstruction
 		        {
-		            Score = problem.GetNbTargetsReachedFrom(problem.DepartBallons.Line, problem.DepartBallons.Col),
+                    Score = problem.GetNbTargetsReachedFrom(firstR, firstC),
 		            Instruction = new InsctructionNode {Move = 1, Parent = null}, //root, we'll manage balloons lifting up later than turn 0 later
 		        };
 
@@ -66,7 +68,7 @@ namespace finale
 		                for (int a = 0; a < 8; a++)
 		                {
 #if DRAW
-		                    maxScore = Math.Max(maxScore, previousScores[r, c, a]);
+		                    maxScore = Math.Max(maxScore, previousScores[r, c, a].Score);
 #endif
 		                    var prevScore = previousScores[r, c, a];
 		                    if (prevScore.Score <= 0)
