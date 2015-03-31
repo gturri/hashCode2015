@@ -10,7 +10,7 @@ namespace finale
 			int result = 0;
 
 			List<Balloon> ballons = BuildInitialBalloonList (solution);
-			for (int tour=0; tour < solution.Moves.Count; tour++) {
+			for (int tour=0; tour < 400; tour++) {
 				UpdatePositions (solution, ballons, tour);
 				result += ComputeInstantScore (solution, ballons);
 			}
@@ -32,17 +32,16 @@ namespace finale
 		}
 
 		private static void UpdateAltitudes(Solution solution, List<Balloon> ballons, int tour){
-			int[] deltaHs = solution.Moves [tour];
-			System.Diagnostics.Debug.Assert (deltaHs.Length == ballons.Count);
 
-			for (int i=0; i < deltaHs.Length; i++) {
+			for (int i=0; i < 53; i++) {
 				int prevAltitude = ballons [i].Altitude;
 
-				if (deltaHs [i] > 1 || deltaHs [i] < -1) {
+                if (solution.Moves[tour,i] > 1 || solution.Moves[tour,i] < -1)
+                {
 					throw new Exception ("deltaH out of range");
 				}
 
-				ballons [i].Altitude += deltaHs [i];
+                ballons[i].Altitude += solution.Moves[tour,i];
 				if (ballons [i].Altitude > solution.problem.NbAltitudes) {
 					throw new Exception ("Ballon is too high");
 				}

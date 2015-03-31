@@ -31,14 +31,12 @@ namespace finale
 		private Solution SolInit(){
 			Solution sol = new Solution(_problem);
 			for (int tour = 0; tour < _problem.NbTours; tour++) {
-				List<int> commands = new List<int> ();
 				for (int b=0; b < _problem.NbAvailableBallons; b++) {
-					commands.Add (tour == 0 ? 1 : 0);
+					sol.Moves[tour, b] = tour == 0 ? 1 : 0;
 				}
 /*				if (tour == 0) {
 					commands [0] = 1;
 				}*/
-				sol.Moves.Add (commands.ToArray ());
 			}
 			return sol;
 		}
@@ -52,12 +50,13 @@ namespace finale
 
 				Solution newSol = new Solution(_problem);
 
-				List<int[]> newMoves = new List<int[]>();
-				for ( int i=0 ; i < current.Moves.Count ; i++ ){
-					newMoves.Add((int[]) current.Moves[i].Clone());
+				for ( int i=0 ; i < 400 ; i++ ){
+				    for (int j = 0; j < 53; j++)
+				    {
+				        newSol.Moves[i, j] = current.Moves[i, j];
+				    }
 				}
-				newMoves[t][b] = h;
-				newSol.Moves = newMoves;
+                newSol.Moves[t,b] = h;
 
 				try {
 					Scorer.Score(newSol);

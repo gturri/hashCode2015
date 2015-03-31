@@ -12,7 +12,7 @@ namespace finale
 			for ( int tour = 0 ; tour < solution.problem.NbTours ; tour++ ){
 				string line = String.Empty;
 				for (int ballon=0; ballon < solution.problem.NbAvailableBallons; ballon++) {
-					line += solution.Moves[tour][ballon] + " ";
+					line += solution.Moves[tour,ballon] + " ";
 				}
 				strSoluce.Add(line);
 			}

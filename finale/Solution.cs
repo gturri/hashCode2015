@@ -5,15 +5,11 @@ namespace finale
 {
 	public class Solution
 	{
-		public List<int[]> Moves = new List<int[]>(400);
+        /// <summary> first index is turn, second is balloon </summary>
+		public int[,] Moves = new int[400, 53];
 
 		public int currentTurn = 0;
 		public Problem problem { get; private set; }
-
-		public Localisation[] BaloonsPositions = new Localisation[53];
-		public int[] BaloonsAltitude = new int[53];
-
-		public List<List<Localisation>> BallonsAtEndOfEachTurn = new List<List<Localisation>> ();
 
 		public Solution (Problem problem)
 		{
@@ -25,9 +21,7 @@ namespace finale
 			System.Diagnostics.Debug.Assert (move < 2 && move > -2);
 			System.Diagnostics.Debug.Assert (ballonIdx >= 0 && ballonIdx < 53);
 
-			Moves [currentTurn] [ballonIdx] = move;
-
-
+			Moves [currentTurn,ballonIdx] = move;
 		}
 	}
 }

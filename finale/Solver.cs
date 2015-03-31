@@ -41,8 +41,6 @@ namespace finale
         // modify variables inplace :(
         public Balloon[] PlayTurn(Balloon[] balloons, Solution solution)
         {
-            // create new result structure
-            solution.Moves.Add(new int[53]);
             _targetsCoveredThisTurn = new List<Localisation>();
 
             for (int b = 0; b < balloons.Length; b++)
