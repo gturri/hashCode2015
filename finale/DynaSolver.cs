@@ -1,4 +1,4 @@
-#define DRAW
+//#define DRAW
 
 using System;
 using System.Collections.Generic;
@@ -36,6 +36,7 @@ namespace finale
 #endif
 		    for (int t = 1 /*turn 0 is hardcoded above*/; t < problem.NbTours; t++)
             {
+                Console.WriteLine(t);
                 var scores = new int[problem.NbLines, problem.NbCols, 8];
                 for (int r = 0; r < problem.NbLines; r++)
 		        {
@@ -80,6 +81,22 @@ namespace finale
 #endif
 		        prevScores = scores;
 		    }
+
+            var max = 0;
+            for (int r = 0; r < problem.NbLines; r++)
+		    {
+		        for (int c = 0; c < problem.NbCols; c++)
+		        {
+		            for (int a = 0; a < 8; a++)
+		            {
+                        if (prevScores[r, c, a] > max)
+                        {
+                            max = prevScores[r, c, a];
+                        }
+		            }
+		        }
+		    }
+		    Console.WriteLine("max = " + max);
 
 		    return solution;
 		}
