@@ -8,6 +8,17 @@ using System.Drawing.Imaging;
 
 namespace finale
 {
+    public class InsctructionNode
+    {
+        public int Move;
+        public InsctructionNode Parent;
+    }
+    public struct ScoreAndInstruction
+    {
+        public int Score;
+        public InsctructionNode Instruction;
+    }
+
 	public class DynaSolver
 	{
 	    public Problem _problem;
@@ -23,10 +34,14 @@ namespace finale
 
 		    var solution = new Solution(problem);
 
-            var previousScores = new int[problem.NbLines, problem.NbCols, 8];
-            var currentScores = new int[problem.NbLines, problem.NbCols, 8];
+            var previousScores = new ScoreAndInstruction[problem.NbLines, problem.NbCols, 8];
+            var currentScores = new ScoreAndInstruction[problem.NbLines, problem.NbCols, 8];
             //init t0
-		    previousScores[problem.DepartBallons.Line, problem.DepartBallons.Col, 0] = problem.GetNbTargetsReachedFrom(problem.DepartBallons.Line, problem.DepartBallons.Col);
+		    previousScores[problem.DepartBallons.Line, problem.DepartBallons.Col, 0] = new ScoreAndInstruction
+		        {
+		            Score = problem.GetNbTargetsReachedFrom(problem.DepartBallons.Line, problem.DepartBallons.Col),
+		            Instruction = new InsctructionNode {Move = 1, Parent = null}, //root, we'll manage balloons lifting up later than turn 0 later
+		        };
 
 #if DRAW
             var turnImg = new Bitmap(300, 75);
@@ -54,7 +69,7 @@ namespace finale
 		                    maxScore = Math.Max(maxScore, previousScores[r, c, a]);
 #endif
 		                    var prevScore = previousScores[r, c, a];
-		                    if (prevScore <= 0)
+		                    if (prevScore.Score <= 0)
 		                        continue;
 
                             //try all moves from current position
@@ -64,9 +79,16 @@ namespace finale
 		                    {
 		                        short newR, newC;
 		                        if (ApplyWind(r, c, a + da, out newR, out newC))
-		                            currentScores[newR, newC, a + da] = Math.Max(
-		                                currentScores[newR, newC, a + da],
-		                                prevScore + problem.GetNbTargetsReachedFrom(newR, newC));
+		                        {
+		                            currentScores[newR, newC, a + da].Score = Math.Max(
+		                                currentScores[newR, newC, a + da].Score,
+		                                prevScore.Score + problem.GetNbTargetsReachedFrom(newR, newC));
+		                            currentScores[newR, newC, a + da].Instruction = new InsctructionNode
+		                                {
+		                                    Move = da,
+		                                    Parent = prevScore.Instruction
+		                                };
+		                        }
 		                    }
                         }
 #if DRAW
@@ -88,23 +110,33 @@ namespace finale
                 currentScores = tmp;
 		    }
 
-            var max = 0;
+            ScoreAndInstruction max = new ScoreAndInstruction();
             for (int r = 0; r < problem.NbLines; r++)
 		    {
 		        for (int c = 0; c < problem.NbCols; c++)
 		        {
 		            for (int a = 0; a < 8; a++)
 		            {
-                        if (previousScores[r, c, a] > max)
+                        if (previousScores[r, c, a].Score > max.Score)
                         {
                             max = previousScores[r, c, a];
                         }
 		            }
 		        }
 		    }
-            Console.WriteLine("max = " + max);
-            Console.WriteLine("in " + sw.ElapsedMilliseconds + "ms");
+            Console.WriteLine("max = " + max.Score);
 
+		    var step = max.Instruction;
+		    int turn = 399;
+		    while (step.Parent != null)
+		    {
+		        solution.Moves[turn, 0] = step.Move;
+		        step = step.Parent;
+		        turn--;
+		    }
+            solution.Moves[turn, 0] = step.Move; //last (=first) move
+            
+            Console.WriteLine("in " + sw.ElapsedMilliseconds + "ms");
 		    return solution;
 		}
 
