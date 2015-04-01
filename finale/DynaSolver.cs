@@ -109,7 +109,7 @@ namespace finale
 	        var max = new ScoreAndInstruction();
 	        for (int r = 0; r < 75; r++)
 	        {
-	            for (int c = 0; c < 400; c++)
+	            for (int c = 0; c < 300; c++)
 	            {
 	                for (int a = 0; a < 8; a++)
 	                {
