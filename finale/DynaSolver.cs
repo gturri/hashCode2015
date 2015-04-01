@@ -21,7 +21,7 @@ namespace finale
 
 	public class DynaSolver
 	{
-	    public Problem _problem;
+	    private readonly Problem _problem;
 
 		public DynaSolver (Problem problem)
 		{
@@ -32,8 +32,6 @@ namespace finale
 		{
 		    var sw = Stopwatch.StartNew();
 
-		    var solution = new Solution(problem);
-
             var previousScores = new ScoreAndInstruction[problem.NbLines, problem.NbCols, 8];
             var currentScores = new ScoreAndInstruction[problem.NbLines, problem.NbCols, 8];
             //init t0
@@ -42,7 +40,7 @@ namespace finale
 		    previousScores[firstR, firstC, 0] = new ScoreAndInstruction
 		        {
                     Score = problem.GetNbTargetsReachedFrom(firstR, firstC),
-		            Instruction = new InsctructionNode {Move = 1, Parent = null}, //root, we'll manage balloons lifting up later than turn 0 later
+		            Instruction = new InsctructionNode {Move = 1, Parent = null}, //root
 		        };
 
 #if DRAW
@@ -115,37 +113,52 @@ namespace finale
                 currentScores = tmp;
 		    }
 
-            ScoreAndInstruction max = new ScoreAndInstruction();
-            for (int r = 0; r < problem.NbLines; r++)
-		    {
-		        for (int c = 0; c < problem.NbCols; c++)
-		        {
-		            for (int a = 0; a < 8; a++)
-		            {
-                        if (previousScores[r, c, a].Score > max.Score)
-                        {
-                            max = previousScores[r, c, a];
-                        }
-		            }
-		        }
-		    }
-            Console.WriteLine("max = " + max.Score);
+            var step = GetBestScore(previousScores);
+            var solution = BuildSolutionFrom(step, problem);
 
-		    var step = max.Instruction;
-		    int turn = 399;
-		    while (step.Parent != null)
-		    {
-		        solution.Moves[turn, 0] = step.Move;
-		        step = step.Parent;
-		        turn--;
-		    }
-            solution.Moves[turn, 0] = step.Move; //last (=first) move
-            
-            Console.WriteLine("in " + sw.ElapsedMilliseconds + "ms");
+		    Console.WriteLine("in " + sw.ElapsedMilliseconds + "ms");
 		    return solution;
 		}
 
-        /// <returns>false if the new location is outside of the map</returns>
+	    private static Solution BuildSolutionFrom(InsctructionNode step, Problem problem)
+	    {
+	        var solution = new Solution(problem);
+	        int turn = 399;
+	        while (step.Parent != null)
+	        {
+	            solution.Moves[turn, 0] = step.Move;
+	            step = step.Parent;
+	            turn--;
+	        }
+	        solution.Moves[turn, 0] = step.Move; //last (=first) move
+	        //TODO : fill with zeros if turns remain
+	        System.Diagnostics.Debug.Assert(turn == 0);
+	        return solution;
+	    }
+
+	    private static InsctructionNode GetBestScore(ScoreAndInstruction[,,] scores)
+	    {
+	        var max = new ScoreAndInstruction();
+	        for (int r = 0; r < 75; r++)
+	        {
+	            for (int c = 0; c < 400; c++)
+	            {
+	                for (int a = 0; a < 8; a++)
+	                {
+	                    if (scores[r, c, a].Score > max.Score)
+	                    {
+	                        max = scores[r, c, a];
+	                    }
+	                }
+	            }
+	        }
+	        Console.WriteLine("max = " + max.Score);
+
+	        var step = max.Instruction;
+	        return step;
+	    }
+
+	    /// <returns>false if the new location is outside of the map</returns>
         private bool ApplyWind(int r, int c, int a, out short newR, out short newC)
         {
             var wind = _problem.GetCaze(r, c).Winds[a+1];
@@ -155,6 +168,7 @@ namespace finale
             return newR >= 0 && newR < 75;
         }
 
+        #region drawing
         void HueToRgb(double H, out int r, out int g, out int b)
         {
             H *= 360.0;
@@ -242,5 +256,6 @@ namespace finale
             if (i > 255) return 255;
             return i;
         }
-	}
+        #endregion
+    }
 }
