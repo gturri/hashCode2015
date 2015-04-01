@@ -17,7 +17,7 @@ namespace finale
 			do
 			{
 				var solver = new DynaSolver(problem);
-				var solution = solver.Solve (problem);
+				var solution = solver.Solve ();
 
 				var score = Scorer.Score (solution);
 				if (score > max)

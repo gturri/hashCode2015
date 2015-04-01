@@ -23,7 +23,7 @@ namespace finale
 		    _problem = problem;
 		}
 
-		public Solution Solve (Problem problem)
+		public Solution Solve ()
 		{
 		    var sw = Stopwatch.StartNew();
 
