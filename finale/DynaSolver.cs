@@ -42,7 +42,7 @@ namespace finale
                     _placedBalloonsPosition[i] = _problem.DepartBallons;
                     _placedBalloonsAltitude[i] = 0;
                 }
-                MoveBalloons(b, 0);
+                MoveBalloons(0);
                 var alreadyCovered = GetCoveredCells();
 
 		        var previousScores = new ScoreAndInstruction[_problem.NbLines,_problem.NbCols,8];
@@ -64,7 +64,7 @@ namespace finale
                             Instruction = rootInstruction,
                         };
 
-                    MoveBalloons(b, t);
+                    MoveBalloons(t);
                     alreadyCovered = GetCoveredCells();
 
 		            for (int r = 0; r < _problem.NbLines; r++)
@@ -127,9 +127,9 @@ namespace finale
 	        return score;
 	    }
 
-	    private void MoveBalloons(int nbBalloons, int turn)
+	    private void MoveBalloons(int turn)
         {
-            for (int b = 0; b < nbBalloons; b++)
+            for (int b = 0; b < 53; b++)
             {
                 var pos = _placedBalloonsPosition[b];
                 _placedBalloonsAltitude[b] += _solution.Moves[turn, b];
