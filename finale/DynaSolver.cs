@@ -56,6 +56,9 @@ namespace finale
 
 		        for (int t = 1 /*turn 0 is hardcoded*/; t < _problem.NbTours; t++)
 		        {
+                    //reset score cache
+                    _scoresCache = new int[75, 300];
+
 		            //a balloon can lift off any turn from the starting cell
 		            var scoreOnFirstCell = GetScoreAt(firstR, firstC, alreadyCovered);
                     if (previousScores[firstR, firstC, 0].Score < scoreOnFirstCell)
@@ -116,8 +119,13 @@ namespace finale
 		    return _solution;
 		}
 
+        private int[,] _scoresCache;
+
 	    private int GetScoreAt(short r, short c, byte[,] alreadyCovered)
 	    {
+	        if (_scoresCache[r, c] != 0)
+	            return _scoresCache[r, c];
+
 	        var hovered = _problem.GetListOfTargetReachedFrom(r, c);
 	        int score = 0;
 	        for (int i = 0; i < hovered.Count; i++)
@@ -126,6 +134,7 @@ namespace finale
 	            if (alreadyCovered[loc.Line, loc.Col] == 0)
 	                score++;
 	        }
+	        _scoresCache[r, c] = score;
 	        return score;
 	    }
 
