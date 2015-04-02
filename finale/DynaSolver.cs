@@ -4,15 +4,15 @@ using System.Diagnostics;
 
 namespace finale
 {
-    public class InsctructionNode
+    public class InstructionNode
     {
         public int Move;
-        public InsctructionNode Parent;
+        public InstructionNode Parent;
     }
     public struct ScoreAndInstruction
     {
         public int Score;
-        public InsctructionNode Instruction;
+        public InstructionNode Instruction;
     }
 
 	public class DynaSolver
@@ -51,7 +51,7 @@ namespace finale
 		        //init t0
 		        short firstR, firstC;
 		        ApplyWind(_problem.DepartBallons.Line, _problem.DepartBallons.Col, 0, out firstR, out firstC);
-		        var rootInstruction = new InsctructionNode {Move = 1, Parent = null}; //the first instruction of all paths : lift off
+		        var rootInstruction = new InstructionNode {Move = 1, Parent = null}; //the first instruction of all paths : lift off
 
 		        for (int t = 1 /*turn 0 is hardcoded*/; t < _problem.NbTours; t++)
 		        {
@@ -90,7 +90,7 @@ namespace finale
 		                                if (newScore > oldScore)
 		                                {
 		                                    currentScores[newR, newC, a + da].Score = newScore;
-		                                    currentScores[newR, newC, a + da].Instruction = new InsctructionNode
+		                                    currentScores[newR, newC, a + da].Instruction = new InstructionNode
 		                                        {
 		                                            Move = da,
 		                                            Parent = prevScore.Instruction
@@ -155,7 +155,7 @@ namespace finale
 	        return covered;
 	    }
 
-	    private void FillSolutionWith(InsctructionNode step, int balloonIdx)
+	    private void FillSolutionWith(InstructionNode step, int balloonIdx)
 	    {
 	        int turn = 399;
 	        while (step.Parent != null)
@@ -167,7 +167,7 @@ namespace finale
             _solution.Moves[turn, balloonIdx] = step.Move; //last (=first) move
 	    }
 
-	    private static InsctructionNode GetBestScore(ScoreAndInstruction[,,] scores)
+	    private static InstructionNode GetBestScore(ScoreAndInstruction[,,] scores)
 	    {
 	        var max = new ScoreAndInstruction();
 	        for (int r = 0; r < 75; r++)
