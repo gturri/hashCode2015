@@ -4,15 +4,15 @@ using System.Diagnostics;
 
 namespace finale
 {
-    public class InstructionNode
+    public struct InstructionNode
     {
         public int Move;
-        public InstructionNode Parent;
+        public int ParentIdx;
     }
     public struct ScoreAndInstruction
     {
         public int Score;
-        public InstructionNode Instruction;
+        public int InstructionIdx;
     }
 
 	public class DynaSolver
@@ -21,6 +21,9 @@ namespace finale
 	    private readonly Solution _solution;
         private readonly Localisation[] _placedBalloonsPosition = new Localisation[53];
         private readonly int[] _placedBalloonsAltitude = new int[53];
+
+	    private readonly InstructionNode[] tree = new InstructionNode[400*300*75*8];
+	    private int _freeIdx;
 
 	    public DynaSolver (Problem problem)
 		{
@@ -51,7 +54,9 @@ namespace finale
 		        //init t0
 		        short firstR, firstC;
 		        ApplyWind(_problem.DepartBallons.Line, _problem.DepartBallons.Col, 0, out firstR, out firstC);
-		        var rootInstruction = new InstructionNode {Move = 1, Parent = null}; //the first instruction of all paths : lift off
+                tree[0].Move = 1; //the first instruction of all paths : lift off
+                tree[0].ParentIdx = -1;
+                _freeIdx = 1;
 
 		        for (int t = 1 /*turn 0 is hardcoded*/; t < _problem.NbTours; t++)
 		        {
@@ -64,7 +69,7 @@ namespace finale
                         previousScores[firstR, firstC, 0] = new ScoreAndInstruction
                         {
                             Score = scoreOnFirstCell,
-                            Instruction = rootInstruction,
+                            InstructionIdx = 0,
                         };
 
                     MoveBalloons(t);
@@ -93,11 +98,10 @@ namespace finale
 		                                if (newScore > oldScore)
 		                                {
 		                                    currentScores[newR, newC, a + da].Score = newScore;
-		                                    currentScores[newR, newC, a + da].Instruction = new InstructionNode
-		                                        {
-		                                            Move = da,
-		                                            Parent = prevScore.Instruction
-		                                        };
+		                                    tree[_freeIdx].Move = da;
+		                                    tree[_freeIdx].ParentIdx = prevScore.InstructionIdx;
+		                                    currentScores[newR, newC, a + da].InstructionIdx = _freeIdx;
+		                                    _freeIdx++;
 		                                }
 		                            }
 		                        }
@@ -110,8 +114,8 @@ namespace finale
 		            currentScores = tmp;
 		        }
 
-		        var step = GetBestScore(previousScores);
-		        FillSolutionWith(step, b);
+		        var stepIdx = GetBestScore(previousScores);
+		        FillSolutionWith(tree[stepIdx], b);
                 Console.WriteLine("(time is " + sw.Elapsed + ")");
             }
 		    Console.WriteLine("total time : " + sw.Elapsed + "ms");
@@ -168,16 +172,16 @@ namespace finale
 	    private void FillSolutionWith(InstructionNode step, int balloonIdx)
 	    {
 	        int turn = 399;
-	        while (step.Parent != null)
+	        while (step.ParentIdx != -1)
 	        {
                 _solution.Moves[turn, balloonIdx] = step.Move;
-	            step = step.Parent;
+	            step = tree[step.ParentIdx];
 	            turn--;
 	        }
             _solution.Moves[turn, balloonIdx] = step.Move; //last (=first) move
 	    }
 
-	    private static InstructionNode GetBestScore(ScoreAndInstruction[,,] scores)
+	    private static int GetBestScore(ScoreAndInstruction[,,] scores)
 	    {
 	        var max = new ScoreAndInstruction();
 	        for (int r = 0; r < 75; r++)
@@ -195,8 +199,7 @@ namespace finale
 	        }
 	        Console.WriteLine("score = " + max.Score);
 
-	        var step = max.Instruction;
-	        return step;
+	        return max.InstructionIdx;
 	    }
 
 	    /// <returns>false if the new location is outside of the map</returns>
