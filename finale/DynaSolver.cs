@@ -116,13 +116,14 @@ namespace finale
 		    return _solution;
 		}
 
-	    private int GetScoreAt(short r, short c, bool[,] alreadyCovered)
+	    private int GetScoreAt(short r, short c, byte[,] alreadyCovered)
 	    {
 	        var hovered = _problem.GetListOfTargetReachedFrom(r, c);
 	        int score = 0;
-	        foreach (var loc in hovered)
+	        for (int i = 0; i < hovered.Count; i++)
 	        {
-	            if (!alreadyCovered[loc.Line, loc.Col])
+	            var loc = hovered[i];
+	            if (alreadyCovered[loc.Line, loc.Col] == 0)
 	                score++;
 	        }
 	        return score;
@@ -140,9 +141,9 @@ namespace finale
             }
 	    }
 
-	    private bool[,] GetCoveredCells()
+	    private byte[,] GetCoveredCells()
 	    {
-	        var covered = new bool[75,300];
+	        var covered = new byte[75,300];
 	        for (int b = 0; b < 53; b++)
 	        {
 	            if (_placedBalloonsAltitude[b] == 0)
@@ -150,7 +151,7 @@ namespace finale
 
 	            foreach (var loc in _problem.GetListOfTargetReachedFrom(_placedBalloonsPosition[b]))
 	            {
-	                covered[loc.Line, loc.Col] = true;
+	                covered[loc.Line, loc.Col] = 1;
 	            }
 	        }
 	        return covered;
