@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace finale
 {
@@ -67,40 +68,40 @@ namespace finale
                     MoveBalloons(t);
                     alreadyCovered = GetCoveredCells();
 
-		            for (int r = 0; r < _problem.NbLines; r++)
-		            {
-		                for (int c = 0; c < _problem.NbCols; c++)
+		            Parallel.For(0, _problem.NbCols, c =>
 		                {
-		                    for (int a = 0; a < 8; a++)
+		                    for (int r = 0; r < _problem.NbLines; r++)
 		                    {
-		                        var prevScore = previousScores[r, c, a];
-		                        if (prevScore.Score <= 0)
-		                            continue;
-
-		                        //try all moves from current position
-		                        var lower = a == 0 ? 0 : -1;
-		                        var upper = a == 7 ? 0 : 1;
-		                        for (int da = lower; da <= upper; da++)
+		                        for (int a = 0; a < 8; a++)
 		                        {
-		                            short newR, newC;
-		                            if (ApplyWind(r, c, a + da, out newR, out newC))
+		                            var prevScore = previousScores[r, c, a];
+		                            if (prevScore.Score <= 0)
+		                                continue;
+
+		                            //try all moves from current position
+		                            var lower = a == 0 ? 0 : -1;
+		                            var upper = a == 7 ? 0 : 1;
+		                            for (int da = lower; da <= upper; da++)
 		                            {
-		                                int oldScore = currentScores[newR, newC, a + da].Score;
-		                                int newScore = prevScore.Score + GetScoreAt(newR, newC, alreadyCovered);
-		                                if (newScore > oldScore)
+		                                short newR, newC;
+		                                if (ApplyWind(r, c, a + da, out newR, out newC))
 		                                {
-		                                    currentScores[newR, newC, a + da].Score = newScore;
-		                                    currentScores[newR, newC, a + da].Instruction = new InstructionNode
-		                                        {
-		                                            Move = da,
-		                                            Parent = prevScore.Instruction
-		                                        };
+		                                    int oldScore = currentScores[newR, newC, a + da].Score;
+		                                    int newScore = prevScore.Score + GetScoreAt(newR, newC, alreadyCovered);
+		                                    if (newScore > oldScore)
+		                                    {
+		                                        currentScores[newR, newC, a + da].Score = newScore;
+		                                        currentScores[newR, newC, a + da].Instruction = new InstructionNode
+		                                            {
+		                                                Move = da,
+		                                                Parent = prevScore.Instruction
+		                                            };
+		                                    }
 		                                }
 		                            }
 		                        }
 		                    }
-		                }
-		            }
+		                });
 		            //swap matrixes
 		            var tmp = previousScores;
 		            previousScores = currentScores;
