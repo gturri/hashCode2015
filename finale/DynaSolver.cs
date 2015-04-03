@@ -37,69 +37,88 @@ namespace finale
 		public Solution Solve ()
 		{
 		    var sw = Stopwatch.StartNew();
+		    int max = 620000;
 
             //pre compute first move
             short firstR, firstC;
             ApplyWind(_problem.DepartBallons.R, _problem.DepartBallons.C, 1, out firstR, out firstC);
 
-		    for (int b = 0; b < 53; b++)
+		    for (int b = 0; b < 53; b = (b+1)%53)
             {
+                //clean solution for current balloon if any
+                for (int t = 0; t < 400; t++)
+                    _solution.Moves[t, b] = 0;
+
                 Console.WriteLine(b);
+                ComputeSolutionForBalloon(firstR, firstC, b);
 
-                var previousScores = new ScoreAndInstruction[_problem.NbLines, _problem.NbCols, 8];
-                var currentScores = new ScoreAndInstruction[_problem.NbLines, _problem.NbCols, 8];
-                _alreadyCovered = InitBalloonLoop();
+                var score = Scorer.Score(_solution);
+                if (score > max)
+                {
+                    Dumper.Dump(_solution, score + ".txt");
+                    max = score;
+                }
 
-                for (int t = 1 /*turn 0 is hardcoded*/; t < _problem.NbTours; t++)
-		        {
-                    InitTurnLoop(firstR, firstC, previousScores, t);
-
-		            for (int r = 0; r < _problem.NbLines; r++)
-		            {
-		                for (int c = 0; c < _problem.NbCols; c++)
-		                {
-		                    for (int a = 0; a < 8; a++)
-		                    {
-		                        var prevScore = previousScores[r, c, a];
-		                        if (prevScore.Score <= 0)
-		                            continue;
-
-		                        //try all moves from current position
-		                        var lower = a == 0 ? 0 : -1;
-		                        var upper = a == 7 ? 0 : 1;
-		                        for (int da = lower; da <= upper; da++)
-		                        {
-		                            short newR, newC;
-		                            if (ApplyWind(r, c, a + da + 1, out newR, out newC))
-		                            {
-		                                int oldScore = currentScores[newR, newC, a + da].Score;
-		                                int newScore = prevScore.Score + _scoresCache[newR, newC];
-		                                if (newScore > oldScore)
-		                                {
-		                                    currentScores[newR, newC, a + da].Score = newScore;
-		                                    _tree[_freeIdx].Move = da;
-		                                    _tree[_freeIdx].ParentIdx = prevScore.InstructionIdx;
-		                                    currentScores[newR, newC, a + da].InstructionIdx = _freeIdx;
-		                                    _freeIdx++;
-		                                }
-		                            }
-		                        }
-		                    }
-		                }
-		            }
-		            //swap matrixes
-		            var tmp = previousScores;
-		            previousScores = currentScores;
-		            currentScores = tmp;
-		        }
-
-		        var stepIdx = GetBestScore(previousScores);
-		        FillSolutionWith(_tree[stepIdx], b);
-                Console.WriteLine("(time is " + sw.Elapsed + ")");
+                Console.WriteLine(score);
+                Console.WriteLine("(" + sw.Elapsed + ")");
+                sw.Restart();
             }
-		    Console.WriteLine("total time : " + sw.Elapsed + "ms");
+
 		    return _solution;
 		}
+
+	    private void ComputeSolutionForBalloon(short firstR, short firstC, int b)
+	    {
+	        var previousScores = new ScoreAndInstruction[_problem.NbLines,_problem.NbCols,8];
+	        var currentScores = new ScoreAndInstruction[_problem.NbLines,_problem.NbCols,8];
+	        _alreadyCovered = InitBalloonLoop();
+
+	        for (int t = 1 /*turn 0 is hardcoded*/; t < _problem.NbTours; t++)
+	        {
+	            InitTurnLoop(firstR, firstC, previousScores, t);
+
+	            for (int r = 0; r < _problem.NbLines; r++)
+	            {
+	                for (int c = 0; c < _problem.NbCols; c++)
+	                {
+	                    for (int a = 0; a < 8; a++)
+	                    {
+	                        var prevScore = previousScores[r, c, a];
+	                        if (prevScore.Score <= 0)
+	                            continue;
+
+	                        //try all moves from current position
+	                        var lower = a == 0 ? 0 : -1;
+	                        var upper = a == 7 ? 0 : 1;
+	                        for (int da = lower; da <= upper; da++)
+	                        {
+	                            short newR, newC;
+	                            if (ApplyWind(r, c, a + da + 1, out newR, out newC))
+	                            {
+	                                int oldScore = currentScores[newR, newC, a + da].Score;
+	                                int newScore = prevScore.Score + _scoresCache[newR, newC];
+	                                if (newScore > oldScore)
+	                                {
+	                                    currentScores[newR, newC, a + da].Score = newScore;
+	                                    _tree[_freeIdx].Move = da;
+	                                    _tree[_freeIdx].ParentIdx = prevScore.InstructionIdx;
+	                                    currentScores[newR, newC, a + da].InstructionIdx = _freeIdx;
+	                                    _freeIdx++;
+	                                }
+	                            }
+	                        }
+	                    }
+	                }
+	            }
+	            //swap matrixes
+	            var tmp = previousScores;
+	            previousScores = currentScores;
+	            currentScores = tmp;
+	        }
+
+	        var stepIdx = GetBestScore(previousScores);
+	        FillSolutionWith(_tree[stepIdx], b);
+	    }
 
 	    private byte[,] InitBalloonLoop()
 	    {
@@ -116,6 +135,7 @@ namespace finale
 	        _tree[0].Move = 1; //the first instruction of all paths : lift off
 	        _tree[0].ParentIdx = -1;
 	        _freeIdx = 1;
+
 	        return alreadyCovered;
 	    }
 
@@ -212,7 +232,6 @@ namespace finale
 	                }
 	            }
 	        }
-	        Console.WriteLine("score = " + max.Score);
 
 	        return max.InstructionIdx;
 	    }
