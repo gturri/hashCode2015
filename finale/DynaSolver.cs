@@ -75,6 +75,11 @@ namespace finale
                     MoveBalloons(t);
                     alreadyCovered = GetCoveredCells();
 
+                    //precompute scores
+		            for (short r = 0; r < _problem.NbLines; r++)
+		                for (short c = 0; c < _problem.NbCols; c++)
+		                    GetScoreAt(r, c, alreadyCovered);
+
 		            for (int r = 0; r < _problem.NbLines; r++)
 		            {
 		                for (int c = 0; c < _problem.NbCols; c++)
@@ -94,7 +99,7 @@ namespace finale
 		                            if (ApplyWind(r, c, a + da + 1, out newR, out newC))
 		                            {
 		                                int oldScore = currentScores[newR, newC, a + da].Score;
-		                                int newScore = prevScore.Score + GetScoreAt(newR, newC, alreadyCovered);
+		                                int newScore = prevScore.Score + _scoresCache[newR, newC];
 		                                if (newScore > oldScore)
 		                                {
 		                                    currentScores[newR, newC, a + da].Score = newScore;
@@ -126,9 +131,6 @@ namespace finale
 
 	    private int GetScoreAt(short r, short c, byte[,] alreadyCovered)
 	    {
-	        if (_scoresCache[r, c] != 0)
-	            return _scoresCache[r, c];
-
 	        var hovered = _problem.GetListOfTargetReachedFrom(r, c);
 	        int score = 0;
 	        for (int i = 0; i < hovered.Count; i++)
