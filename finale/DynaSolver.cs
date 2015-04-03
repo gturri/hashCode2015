@@ -22,8 +22,11 @@ namespace finale
         private readonly Vec2[] _placedBalloonsPosition = new Vec2[53];
         private readonly int[] _placedBalloonsAltitude = new int[53];
 
-	    private readonly InstructionNode[] tree = new InstructionNode[400*300*75*8];
+	    private readonly InstructionNode[] _tree = new InstructionNode[400*300*75*8];
 	    private int _freeIdx;
+
+        private int[,] _scoresCache;
+        private byte[,] _alreadyCovered;
 
 	    public DynaSolver (Problem problem)
 		{
@@ -35,50 +38,21 @@ namespace finale
 		{
 		    var sw = Stopwatch.StartNew();
 
+            //pre compute first move
+            short firstR, firstC;
+            ApplyWind(_problem.DepartBallons.R, _problem.DepartBallons.C, 1, out firstR, out firstC);
+
 		    for (int b = 0; b < 53; b++)
             {
                 Console.WriteLine(b);
 
-                //reset positions
-                for (int i = 0; i < 53; i++)
-                {
-                    _placedBalloonsPosition[i] = _problem.DepartBallons;
-                    _placedBalloonsAltitude[i] = 0;
-                }
-                MoveBalloons(0);
-                var alreadyCovered = GetCoveredCells();
+                var previousScores = new ScoreAndInstruction[_problem.NbLines, _problem.NbCols, 8];
+                var currentScores = new ScoreAndInstruction[_problem.NbLines, _problem.NbCols, 8];
+                _alreadyCovered = InitBalloonLoop();
 
-		        var previousScores = new ScoreAndInstruction[_problem.NbLines,_problem.NbCols,8];
-		        var currentScores = new ScoreAndInstruction[_problem.NbLines,_problem.NbCols,8];
-
-		        //init t0
-		        short firstR, firstC;
-		        ApplyWind(_problem.DepartBallons.R, _problem.DepartBallons.C, 1, out firstR, out firstC);
-                tree[0].Move = 1; //the first instruction of all paths : lift off
-                tree[0].ParentIdx = -1;
-                _freeIdx = 1;
-
-		        for (int t = 1 /*turn 0 is hardcoded*/; t < _problem.NbTours; t++)
+                for (int t = 1 /*turn 0 is hardcoded*/; t < _problem.NbTours; t++)
 		        {
-                    //reset score cache
-                    _scoresCache = new int[75, 300];
-
-		            //a balloon can lift off any turn from the starting cell
-		            var scoreOnFirstCell = GetScoreAt(firstR, firstC, alreadyCovered);
-                    if (previousScores[firstR, firstC, 0].Score < scoreOnFirstCell)
-                        previousScores[firstR, firstC, 0] = new ScoreAndInstruction
-                        {
-                            Score = scoreOnFirstCell,
-                            InstructionIdx = 0,
-                        };
-
-                    MoveBalloons(t);
-                    alreadyCovered = GetCoveredCells();
-
-                    //precompute scores
-		            for (short r = 0; r < _problem.NbLines; r++)
-		                for (short c = 0; c < _problem.NbCols; c++)
-		                    GetScoreAt(r, c, alreadyCovered);
+                    InitTurnLoop(firstR, firstC, previousScores, t);
 
 		            for (int r = 0; r < _problem.NbLines; r++)
 		            {
@@ -103,8 +77,8 @@ namespace finale
 		                                if (newScore > oldScore)
 		                                {
 		                                    currentScores[newR, newC, a + da].Score = newScore;
-		                                    tree[_freeIdx].Move = da;
-		                                    tree[_freeIdx].ParentIdx = prevScore.InstructionIdx;
+		                                    _tree[_freeIdx].Move = da;
+		                                    _tree[_freeIdx].ParentIdx = prevScore.InstructionIdx;
 		                                    currentScores[newR, newC, a + da].InstructionIdx = _freeIdx;
 		                                    _freeIdx++;
 		                                }
@@ -120,14 +94,53 @@ namespace finale
 		        }
 
 		        var stepIdx = GetBestScore(previousScores);
-		        FillSolutionWith(tree[stepIdx], b);
+		        FillSolutionWith(_tree[stepIdx], b);
                 Console.WriteLine("(time is " + sw.Elapsed + ")");
             }
 		    Console.WriteLine("total time : " + sw.Elapsed + "ms");
 		    return _solution;
 		}
 
-        private int[,] _scoresCache;
+	    private byte[,] InitBalloonLoop()
+	    {
+            //reset positions
+	        for (int i = 0; i < 53; i++)
+	        {
+	            _placedBalloonsPosition[i] = _problem.DepartBallons;
+	            _placedBalloonsAltitude[i] = 0;
+	        }
+	        MoveBalloons(0);
+	        var alreadyCovered = GetCoveredCells();
+
+	        //init t0
+	        _tree[0].Move = 1; //the first instruction of all paths : lift off
+	        _tree[0].ParentIdx = -1;
+	        _freeIdx = 1;
+	        return alreadyCovered;
+	    }
+
+        private void InitTurnLoop(short firstR, short firstC, ScoreAndInstruction[, ,] previousScores, int t)
+        {
+            //reset score cache
+            _scoresCache = new int[75, 300];
+
+            //a balloon can lift off any turn from the starting cell
+            var scoreOnFirstCell = GetScoreAt(firstR, firstC, _alreadyCovered);
+            if (previousScores[firstR, firstC, 0].Score < scoreOnFirstCell)
+                previousScores[firstR, firstC, 0] = new ScoreAndInstruction
+                {
+                    Score = scoreOnFirstCell,
+                    InstructionIdx = 0,
+                };
+
+            MoveBalloons(t);
+            _alreadyCovered = GetCoveredCells();
+
+            //precompute scores
+            for (short r = 0; r < _problem.NbLines; r++)
+                for (short c = 0; c < _problem.NbCols; c++)
+                    GetScoreAt(r, c, _alreadyCovered);
+        }
 
 	    private int GetScoreAt(short r, short c, byte[,] alreadyCovered)
 	    {
@@ -177,7 +190,7 @@ namespace finale
 	        while (step.ParentIdx != -1)
 	        {
                 _solution.Moves[turn, balloonIdx] = step.Move;
-	            step = tree[step.ParentIdx];
+	            step = _tree[step.ParentIdx];
 	            turn--;
 	        }
             _solution.Moves[turn, balloonIdx] = step.Move; //last (=first) move
