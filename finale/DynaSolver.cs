@@ -53,7 +53,7 @@ namespace finale
 
 		        //init t0
 		        short firstR, firstC;
-		        ApplyWind(_problem.DepartBallons.R, _problem.DepartBallons.C, 0, out firstR, out firstC);
+		        ApplyWind(_problem.DepartBallons.R, _problem.DepartBallons.C, 1, out firstR, out firstC);
                 tree[0].Move = 1; //the first instruction of all paths : lift off
                 tree[0].ParentIdx = -1;
                 _freeIdx = 1;
@@ -91,7 +91,7 @@ namespace finale
 		                        for (int da = lower; da <= upper; da++)
 		                        {
 		                            short newR, newC;
-		                            if (ApplyWind(r, c, a + da, out newR, out newC))
+		                            if (ApplyWind(r, c, a + da + 1, out newR, out newC))
 		                            {
 		                                int oldScore = currentScores[newR, newC, a + da].Score;
 		                                int newScore = prevScore.Score + GetScoreAt(newR, newC, alreadyCovered);
@@ -148,7 +148,7 @@ namespace finale
                 var pos = _placedBalloonsPosition[b];
                 _placedBalloonsAltitude[b] += _solution.Moves[turn, b];
                 short newR, newC;
-                ApplyWind(pos.R, pos.C, _placedBalloonsAltitude[b] - 1, out newR, out newC);
+                ApplyWind(pos.R, pos.C, _placedBalloonsAltitude[b], out newR, out newC);
                 _placedBalloonsPosition[b] = new Vec2(newR, newC);
             }
 	    }
@@ -205,9 +205,8 @@ namespace finale
 	    /// <returns>false if the new location is outside of the map</returns>
         private bool ApplyWind(int r, int c, int a, out short newR, out short newC)
         {
-            var wind = _problem.GetCaze(r, c).Winds[a+1];
-            newC = (short) ((c + wind.C)%300);
-            if (newC < 0) newC += 300;
+            var wind = _problem.Winds[r, c, a];
+            newC = (short) ((300 + c + wind.C)%300);
             newR = (short) (r + wind.R);
             return newR >= 0 && newR < 75;
         }
