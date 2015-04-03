@@ -25,7 +25,7 @@ namespace finale
 
 			//3rd line
 			string[] thirdLine = text [2].Split (' ');
-			Localisation departBallon = new Localisation (line: short.Parse (thirdLine [0]), col: short.Parse (thirdLine [1]));
+			Vec2 departBallon = new Vec2 (short.Parse (thirdLine [0]), short.Parse (thirdLine [1]));
 
 			//targets
 			List<List<Caze>> cazes = new List<List<Caze>> ();
@@ -58,7 +58,7 @@ namespace finale
                         short deltaCol = short.Parse(altitudeLineStr[charIdx + 1]);
 						charIdx += 2;
 
-						cazes [lineForGivenAltitude] [c].Winds [altitude] = new Vector(deltaRow, deltaCol);
+						cazes [lineForGivenAltitude] [c].Winds [altitude] = new Vec2(deltaRow, deltaCol);
 					}
 				}
 			}

@@ -57,18 +57,18 @@ namespace finale
 				if (ballon.Altitude == 0 || ballon.IsDead) {
 					continue;
 				}
-				Vector move = solution.problem.GetCaze (ballon.Location).Winds [ballon.Altitude];
-				short newLine = (short)(ballon.Location.Line + move.DeltaRow);
-                short newCol = (short) ((ballon.Location.Col + move.DeltaCol) % solution.problem.NbCols);
+				Vec2 move = solution.problem.GetCaze (ballon.Location).Winds [ballon.Altitude];
+				short newLine = (short)(ballon.Location.R + move.R);
+                short newCol = (short) ((ballon.Location.C + move.C) % solution.problem.NbCols);
 				if (newCol < 0)
 					newCol += 300;
-				ballon.Location = new Localisation (newLine, newCol);
+				ballon.Location = new Vec2 (newLine, newCol);
 			}
 		}
 
 		private static void KillBallons(Solution solution, List<Balloon> ballons){
 			foreach (var b in ballons) {
-				if (b.Location.Line < 0 || b.Location.Line >= solution.problem.NbLines) {
+				if (b.Location.R < 0 || b.Location.R >= solution.problem.NbLines) {
 					b.IsDead = true;
 				}
 			}
@@ -87,9 +87,9 @@ namespace finale
 		            for (int c = 0; c < cazes.Count; c++)
 		            {
 		                var loc = cazes[c];
-		                if (!covered[loc.Line, loc.Col])
+		                if (!covered[loc.R, loc.C])
 		                {
-		                    covered[loc.Line, loc.Col] = true;
+		                    covered[loc.R, loc.C] = true;
                             result++;
                         }
 		            }

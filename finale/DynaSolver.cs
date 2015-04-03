@@ -19,7 +19,7 @@ namespace finale
 	{
 	    private readonly Problem _problem;
 	    private readonly Solution _solution;
-        private readonly Localisation[] _placedBalloonsPosition = new Localisation[53];
+        private readonly Vec2[] _placedBalloonsPosition = new Vec2[53];
         private readonly int[] _placedBalloonsAltitude = new int[53];
 
 	    private readonly InstructionNode[] tree = new InstructionNode[400*300*75*8];
@@ -53,7 +53,7 @@ namespace finale
 
 		        //init t0
 		        short firstR, firstC;
-		        ApplyWind(_problem.DepartBallons.Line, _problem.DepartBallons.Col, 0, out firstR, out firstC);
+		        ApplyWind(_problem.DepartBallons.R, _problem.DepartBallons.C, 0, out firstR, out firstC);
                 tree[0].Move = 1; //the first instruction of all paths : lift off
                 tree[0].ParentIdx = -1;
                 _freeIdx = 1;
@@ -134,7 +134,7 @@ namespace finale
 	        for (int i = 0; i < hovered.Count; i++)
 	        {
 	            var loc = hovered[i];
-	            if (alreadyCovered[loc.Line, loc.Col] == 0)
+	            if (alreadyCovered[loc.R, loc.C] == 0)
 	                score++;
 	        }
 	        _scoresCache[r, c] = score;
@@ -148,8 +148,8 @@ namespace finale
                 var pos = _placedBalloonsPosition[b];
                 _placedBalloonsAltitude[b] += _solution.Moves[turn, b];
                 short newR, newC;
-                ApplyWind(pos.Line, pos.Col, _placedBalloonsAltitude[b] - 1, out newR, out newC);
-                _placedBalloonsPosition[b] = new Localisation(newR, newC);
+                ApplyWind(pos.R, pos.C, _placedBalloonsAltitude[b] - 1, out newR, out newC);
+                _placedBalloonsPosition[b] = new Vec2(newR, newC);
             }
 	    }
 
@@ -163,7 +163,7 @@ namespace finale
 
 	            foreach (var loc in _problem.GetListOfTargetReachedFrom(_placedBalloonsPosition[b]))
 	            {
-	                covered[loc.Line, loc.Col] = 1;
+	                covered[loc.R, loc.C] = 1;
 	            }
 	        }
 	        return covered;
@@ -206,9 +206,9 @@ namespace finale
         private bool ApplyWind(int r, int c, int a, out short newR, out short newC)
         {
             var wind = _problem.GetCaze(r, c).Winds[a+1];
-            newC = (short) ((c + wind.DeltaCol)%300);
+            newC = (short) ((c + wind.C)%300);
             if (newC < 0) newC += 300;
-            newR = (short) (r + wind.DeltaRow);
+            newR = (short) (r + wind.R);
             return newR >= 0 && newR < 75;
         }
     }

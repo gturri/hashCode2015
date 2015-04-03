@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace finale
 {
@@ -13,10 +11,11 @@ namespace finale
         public short RayonCouverture { get; private set; }
         public short NbTours { get; private set; }
 
-		public Localisation DepartBallons { get; private set;}
+        public Vec2 DepartBallons { get; private set; }
 
-		public Caze GetCaze(Localisation loc){
-			return GetCaze (loc.Line, loc.Col);
+        public Caze GetCaze(Vec2 loc)
+        {
+			return GetCaze (loc.R, loc.C);
 		}
 
 		public Caze GetCaze (int r, int c){
@@ -27,10 +26,7 @@ namespace finale
 
 		private List<List<Caze>> _cazes;
 
-		private List<Localisation> _targets;
-		public List<Localisation> Targets { get { return _targets; } }
-
-        public Problem(short nbLines, short nbCols, short nbAltitudes, short rayonCouverture, short nbTours, Localisation departBallons, List<List<Caze>> cazes, short nbAvailableBallons)
+        public Problem(short nbLines, short nbCols, short nbAltitudes, short rayonCouverture, short nbTours, Vec2 departBallons, List<List<Caze>> cazes, short nbAvailableBallons)
 		{
 			NbLines = nbLines;
 			NbCols = nbCols;
@@ -43,78 +39,11 @@ namespace finale
 			_cazes = cazes;
 
 			NbAvailableBallons = nbAvailableBallons;
-
-			BuildTargets ();
-
-			CheckTraps ();
 		}
 
-		void CheckTraps ()
+        private List<Vec2> GetCazesReachedFrom(short r, short c)
 		{
-			bool cazeMarked = false;
-			int traps = 0;
-
-			do
-			{
-				cazeMarked = false;
-				for (int r = 0; r < 75; r++)
-				{
-					for (int c = 0; c < 300; c++)
-					{
-						var caze = GetCaze (r, c);
-						for (int a = 0; a < 9; a++)
-						{
-							if(caze.IsTrap [a])
-								continue; //already seen
-
-							bool canEscape = false;
-							for (int d = -1; d < 2; d++)
-							{
-								if (a + d < 1 || a + d >= 9)
-									continue;
-
-								var wind = caze.Winds [a + d];
-								if (r + wind.DeltaRow < 0 || r + wind.DeltaRow >= 75)
-									continue;
-
-								var newR = r + wind.DeltaRow;
-								var newC = (c + wind.DeltaCol) % 300;
-								if(newC < 0) newC += 300;
-								if(GetCaze(newR, newC).IsTrap[a+d])
-									continue;
-
-								canEscape = true;
-								break;
-							}
-							if (!canEscape)
-							{
-								caze.IsTrap [a] = true;
-								cazeMarked = true;
-								traps++;
-							}
-						}
-					}
-				}
-			} while(cazeMarked);
-		}
-
-		private void BuildTargets(){
-			_targets = new List<Localisation> ();
-            for (short r = 0; r < NbLines; r++)
-            {
-                for (short c = 0; c < NbCols; c++)
-                {
-					if (GetCaze (r, c).IsTarget) {
-						_targets.Add (new Localisation (r, c));
-					}
-				}
-			}
-		}
-
-
-        private List<Localisation> GetCazesReachedFrom(short r, short c)
-		{
-			var reached = new List<Localisation> ();
+            var reached = new List<Vec2>();
             for (short i = -7; i <= 7; i++)
 			{
                 for (short j = -7; j <= 7; j++)
@@ -131,34 +60,29 @@ namespace finale
 					if (cazeR < 0 || cazeR >= 75) //boundaries check
 						continue;
 
-					reached.Add (new Localisation(cazeR, cazeC));
+                    reached.Add(new Vec2(cazeR, cazeC));
 				}
 			}
 			return reached;
 		}
 
-        readonly List<Localisation>[,] _cacheTargets = new List<Localisation>[75,300];
+        readonly List<Vec2>[,] _cacheTargets = new List<Vec2>[75, 300];
 
-        public int GetNbTargetsReachedFrom(short r, short c)
+        public List<Vec2> GetListOfTargetReachedFrom(Vec2 l)
         {
-            return GetListOfTargetReachedFrom(r, c).Count;
+            return GetListOfTargetReachedFrom(l.R, l.C);
         }
 
-        public List<Localisation> GetListOfTargetReachedFrom(Localisation l)
+        public List<Vec2> GetListOfTargetReachedFrom(short r, short c)
         {
-            return GetListOfTargetReachedFrom(l.Line, l.Col);
-        }
-
-        public List<Localisation> GetListOfTargetReachedFrom(short r, short c)
-        {
-            List<Localisation> fromCache = _cacheTargets[r, c];
+            List<Vec2> fromCache = _cacheTargets[r, c];
             if (fromCache != null)
             {
                 return fromCache;
             }
 
-            var list = new List<Localisation>();
-            foreach (Localisation loc in GetCazesReachedFrom(r, c))
+            var list = new List<Vec2>();
+            foreach (Vec2 loc in GetCazesReachedFrom(r, c))
             {
                 if (GetCaze(loc).IsTarget) list.Add(loc);
             }
@@ -166,84 +90,5 @@ namespace finale
             _cacheTargets[r,c] = list;
             return list;
         }
-
-        public int GetNbTargetsReachedFromWhileIgnoringList(short r, short c, List<Localisation> targetsAlreadyCovered)
-        {
-            int count = 0;
-            foreach (Localisation loc in GetCazesReachedFrom(r, c))
-            {
-                if (GetCaze(loc).IsTarget && !targetsAlreadyCovered.Contains(loc)) count++;
-            }
-            return count;
-        }
-
-
-	    // Give all 3 possible postions for a baloon at next turn in that order :
-        // if altitude -1, if stable, if altitude +1
-        public static List<Localisation> FindNextPossiblePostions(Problem problem, Localisation currentLoc, int currentAltitude)
-        {
-            // check winds at current
-            var possiblePositions = new List<Localisation>();
-
-            // -------- Altitude -1 -----------
-            if (!IsAltitudeValid(problem, currentAltitude - 1))
-                possiblePositions.Add(new Localisation(-1, -1));
-            else
-            {
-                short nextLine = (short) (currentLoc.Line + problem.GetCaze(currentLoc).Winds[currentAltitude - 1].DeltaRow);
-                if (nextLine > problem.NbLines || nextLine < 0)
-                    possiblePositions.Add(new Localisation(-1, -1));
-                else
-                {
-                    short nextCaseAltmin1Col = (short) ((currentLoc.Col + problem.GetCaze(currentLoc).Winds[currentAltitude - 1].DeltaCol) % problem.NbCols);
-                    possiblePositions.Add(new Localisation(nextLine, nextCaseAltmin1Col));
-                }
-            }
-
-            // ---------- Altitude 0 -----------
-            if (!IsAltitudeValid(problem, currentAltitude))
-            {
-                possiblePositions.Add(new Localisation(-1, -1));
-            }
-            else
-            {
-                short nextLine = (short) (currentLoc.Line + problem.GetCaze(currentLoc).Winds[currentAltitude].DeltaRow);
-                if (nextLine > problem.NbLines || nextLine < 0)
-                    possiblePositions.Add(new Localisation(-1, -1));
-                else
-                {
-                    short nextCaseAlt0Col = (short) ((currentLoc.Col + problem.GetCaze(currentLoc).Winds[currentAltitude].DeltaCol) % problem.NbCols);
-                    possiblePositions.Add(new Localisation(nextLine, nextCaseAlt0Col));
-                }
-
-            }
-
-            // ---------- Altitude +1 ------------
-            if (!IsAltitudeValid(problem, currentAltitude + 1))
-            {
-                possiblePositions.Add(new Localisation(-1, -1));
-            }
-            else
-            {
-                short nextLine = (short) (currentLoc.Line + problem.GetCaze(currentLoc).Winds[currentAltitude + 1].DeltaRow);
-                if (nextLine > problem.NbLines || nextLine < 0)
-                    possiblePositions.Add(new Localisation(-1, -1));
-                else
-                {
-                    short nextCaseAltmax1Col = (short) ((currentLoc.Col + problem.GetCaze(currentLoc).Winds[currentAltitude + 1].DeltaCol) % problem.NbCols);
-                    possiblePositions.Add(new Localisation(nextLine, nextCaseAltmax1Col));
-                }
-            }
-
-            return possiblePositions;
-        }
-
-        public static bool IsAltitudeValid(Problem problem,int altitude)
-        {
-            if (altitude > problem.NbAltitudes || altitude <= 0)
-                return false;
-            return true;
-        }
-
 	}
 }

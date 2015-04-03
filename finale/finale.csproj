@@ -35,19 +35,15 @@
   <ItemGroup>
     <Compile Include="Balloon.cs" />
     <Compile Include="DynaSolver.cs" />
-    <Compile Include="MapPrinter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Parser.cs" />
-    <Compile Include="Solver.cs" />
+    <Compile Include="Scorer.cs" />
     <Compile Include="Dumper.cs" />
-    <Compile Include="Vector.cs" />
+    <Compile Include="Vec2.cs" />
     <Compile Include="Problem.cs" />
     <Compile Include="Caze.cs" />
-    <Compile Include="Localisation.cs" />
     <Compile Include="Solution.cs" />
-    <Compile Include="GtDummySolver.cs" />
-    <Compile Include="Scorer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
