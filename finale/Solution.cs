@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace finale
 {
@@ -14,5 +15,30 @@ namespace finale
 		{
 			this.problem = problem;
 		}
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            for (int i = 0; i < 400; i++)
+            {
+                for (int j = 0; j < 53; j++)
+                {
+                    switch (Moves[i, j])
+                    {
+                        case -1:
+                            sb.Append('v');
+                            break;
+                        case 0:
+                            sb.Append('-');
+                            break;
+                        case 1:
+                            sb.Append('^');
+                            break;
+                    }
+                }
+                sb.AppendLine();
+            }
+            return sb.ToString();
+        }
 	}
 }
