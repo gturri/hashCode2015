@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace finale
 {
@@ -12,21 +13,28 @@ namespace finale
 		{
             var problem = Parser.Parse("../../final_round.in");
 
-			int max = -1;
-			bool infinite = false;
-			do
-			{
-				var solver = new DynaSolver(problem);
-				var solution = solver.Solve ();
+            var startingSolution = new Solution(problem);
+            if (args.Length > 0)
+            {
+                var startingSolutionFile = args[0];
+                using (var reader = new StreamReader(startingSolutionFile))
+                {
+                    int turn = 0;
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        var moves = line.Split(new[]{' '}, StringSplitOptions.RemoveEmptyEntries);
+                        for (int b = 0; b < moves.Length; b++)
+                        {
+                            startingSolution.Moves[turn, b] = Int32.Parse(moves[b]);
+                        }
+                        turn++;
+                    }
+                }
+            }
 
-				var score = Scorer.Score (solution);
-				if (score > max)
-				{
-					max = score;
-					Dumper.Dump (solution, score + ".txt");
-					Console.WriteLine (score);
-				}
-			} while(infinite);
+			var solver = new DynaSolver(problem, startingSolution);
+			solver.Solve();
 		}
 	}
 }

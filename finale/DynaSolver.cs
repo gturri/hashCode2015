@@ -28,13 +28,13 @@ namespace finale
         private int[,] _scoresCache;
         private byte[,] _alreadyCovered;
 
-	    public DynaSolver (Problem problem)
+	    public DynaSolver (Problem problem, Solution startingSolution)
 		{
-		    _problem = problem;
-            _solution = new Solution(problem);
+            _problem = problem;
+            _solution = startingSolution;
 		}
 
-		public Solution Solve ()
+		public void Solve()
 		{
 		    var sw = Stopwatch.StartNew();
 		    int max = 620000;
@@ -63,15 +63,13 @@ namespace finale
                 Console.WriteLine("(" + sw.Elapsed + ")");
                 sw.Restart();
             }
-
-		    return _solution;
 		}
 
 	    private void ComputeSolutionForBalloon(short firstR, short firstC, int b)
 	    {
 	        var previousScores = new ScoreAndInstruction[_problem.NbLines,_problem.NbCols,8];
 	        var currentScores = new ScoreAndInstruction[_problem.NbLines,_problem.NbCols,8];
-	        _alreadyCovered = InitBalloonLoop();
+	        InitBalloonLoop();
 
 	        for (int t = 1 /*turn 0 is hardcoded*/; t < _problem.NbTours; t++)
 	        {
@@ -120,7 +118,7 @@ namespace finale
 	        FillSolutionWith(_tree[stepIdx], b);
 	    }
 
-	    private byte[,] InitBalloonLoop()
+	    private void InitBalloonLoop()
 	    {
             //reset positions
 	        for (int i = 0; i < 53; i++)
@@ -129,14 +127,12 @@ namespace finale
 	            _placedBalloonsAltitude[i] = 0;
 	        }
 	        MoveBalloons(0);
-	        var alreadyCovered = GetCoveredCells();
+	        _alreadyCovered = GetCoveredCells();
 
 	        //init t0
 	        _tree[0].Move = 1; //the first instruction of all paths : lift off
 	        _tree[0].ParentIdx = -1;
 	        _freeIdx = 1;
-
-	        return alreadyCovered;
 	    }
 
         private void InitTurnLoop(short firstR, short firstC, ScoreAndInstruction[, ,] previousScores, int t)
