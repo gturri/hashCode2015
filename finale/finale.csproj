@@ -34,7 +34,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Balloon.cs" />
-    <Compile Include="DebugHelper.cs" />
+    <Compile Include="Helper.cs" />
     <Compile Include="DynaSolver.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
