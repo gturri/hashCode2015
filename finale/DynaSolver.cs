@@ -37,7 +37,7 @@ namespace finale
 		public void Solve()
 		{
 		    var sw = Stopwatch.StartNew();
-		    int max = 620000;
+		    int max = 600000;
 
 		    for (int b = 0; b < 53; b = (b+1)%53)
             {
@@ -73,14 +73,9 @@ namespace finale
 						currentScores [i, j, k].Score = -1;
 					}
 
-			//place balloon on the ground for each turn
+			//place balloon on the ground
 			previousScores[_problem.DepartBallons.R, _problem.DepartBallons.C, 0] = new ScoreAndInstruction
 			{
-				Score = 0,
-				InstructionIdx = -1,
-			};
-			currentScores[_problem.DepartBallons.R, _problem.DepartBallons.C, 0] = new ScoreAndInstruction
-	    {
 				Score = 0,
 				InstructionIdx = -1,
 			};
@@ -128,6 +123,17 @@ namespace finale
 	            var tmp = previousScores;
 	            previousScores = currentScores;
 	            currentScores = tmp;
+
+				for (int i = 0; i < _problem.NbLines; i++)
+					for (int j = 0; j < _problem.NbCols; j++)
+						for (int k = 0; k < 9; k++)
+							currentScores [i, j, k].Score = -1;
+
+				previousScores[_problem.DepartBallons.R, _problem.DepartBallons.C, 0] = new ScoreAndInstruction
+				{
+					Score = 0,
+					InstructionIdx = -1,
+				};
 	        }
 
 	        var stepIdx = GetBestScore(previousScores);
@@ -230,7 +236,6 @@ namespace finale
 	                }
 	            }
 	        }
-
 	        return max.InstructionIdx;
 	    }
 
