@@ -37,9 +37,11 @@ namespace finale
 		public void Solve()
 		{
 		    var sw = Stopwatch.StartNew();
-		    int max = 600000;
 
-		    for (int b = 0; b < 53; b = (b+1)%53)
+			int max = Scorer.Score(_solution);
+			int stuckness = 0;
+
+		    for (int b = 0; ; b = (b+1)%53)
             {
                 //clean solution for current balloon if any
                 for (int t = 0; t < 400; t++)
@@ -49,11 +51,23 @@ namespace finale
                 ComputeSolutionForBalloon(b);
 
                 var score = Scorer.Score(_solution);
+				var improvement = score - max;
+				Console.WriteLine ("improvement : +" + improvement);
                 if (score > max)
                 {
                     Dumper.Dump(_solution, score + ".txt");
                     max = score;
+					stuckness = 0;
                 }
+				else
+				{
+					stuckness++;
+					if (stuckness == 53)
+					{
+						Console.WriteLine ("all balloons are on a stable state");
+						return; //TODO introduce smart perturbation
+					}
+				}
 
                 Console.WriteLine(score);
                 Console.WriteLine("(" + sw.Elapsed + ")");
