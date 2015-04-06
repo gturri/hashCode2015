@@ -57,12 +57,7 @@ namespace finale
 				if (ballon.Altitude == 0 || ballon.IsDead) {
 					continue;
 				}
-                Vec2 move = solution.problem.Winds[ballon.Location.R, ballon.Location.C, ballon.Altitude];
-				short newLine = (short)(ballon.Location.R + move.R);
-                short newCol = (short) ((ballon.Location.C + move.C) % solution.problem.NbCols);
-				if (newCol < 0)
-					newCol += 300;
-				ballon.Location = new Vec2 (newLine, newCol);
+                ballon.Location = solution.problem.Winds[ballon.Location.R, ballon.Location.C, ballon.Altitude];
 			}
 		}
 

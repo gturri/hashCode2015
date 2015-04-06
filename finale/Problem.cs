@@ -32,8 +32,15 @@ namespace finale
             {
                 for (int j = 0; j < 300; j++)
                 {
-                    for (int k = 1; k < 9; k++)
-                        Winds[i, j, k] = cazes[i][j].Winds[k];
+                    for (int k = 0; k < 9; k++)
+                    {
+                        var windVector = cazes[i][j].Winds[k];
+                        var newR = (short)(i + windVector.R);
+                        var newC = (short)((300 + j + windVector.C) % 300);
+                        if (newR < 0 || newR >= 75)
+                            newR = -1; //out
+                        Winds[i, j, k] = new Vec2(newR, newC);
+                    }
                     if (cazes[i][j].IsTarget)
                         Targets[i, j] = 1;
                 }

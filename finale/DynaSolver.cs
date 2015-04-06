@@ -79,26 +79,11 @@ namespace finale
 	    {
 	        var previousScores = new ScoreAndInstruction[_problem.NbLines,_problem.NbCols,9];
 			var currentScores = new ScoreAndInstruction[_problem.NbLines,_problem.NbCols,9];
-			for (int i = 0; i < _problem.NbLines; i++)
-				for (int j = 0; j < _problem.NbCols; j++)
-					for (int k = 0; k < 9; k++)
-					{
-						previousScores [i, j, k].Score = -1;
-						currentScores [i, j, k].Score = -1;
-					}
-
-			//place balloon on the ground
-			previousScores[_problem.DepartBallons.R, _problem.DepartBallons.C, 0] = new ScoreAndInstruction
-			{
-				Score = 0,
-				InstructionIdx = -1,
-			};
-
-	        InitBalloonLoop();
+	        InitBalloonLoop(previousScores);
 
 	        for (int t = 0; t < _problem.NbTours; t++)
 	        {
-	            InitTurnLoop(t);
+                InitTurnLoop(t, previousScores, currentScores);
 
 	            for (int r = 0; r < _problem.NbLines; r++)
 	            {
@@ -137,25 +122,28 @@ namespace finale
 	            var tmp = previousScores;
 	            previousScores = currentScores;
 	            currentScores = tmp;
-
-				for (int i = 0; i < _problem.NbLines; i++)
-					for (int j = 0; j < _problem.NbCols; j++)
-						for (int k = 0; k < 9; k++)
-							currentScores [i, j, k].Score = -1;
-
-				previousScores[_problem.DepartBallons.R, _problem.DepartBallons.C, 0] = new ScoreAndInstruction
-				{
-					Score = 0,
-					InstructionIdx = -1,
-				};
 	        }
 
 	        var stepIdx = GetBestScore(previousScores);
 	        FillSolutionWith(_tree[stepIdx], b);
 	    }
 
-	    private void InitBalloonLoop()
+	    private void InitBalloonLoop(ScoreAndInstruction[,,] previousScores)
 	    {
+            for (int i = 0; i < _problem.NbLines; i++)
+                for (int j = 0; j < _problem.NbCols; j++)
+                    for (int k = 0; k < 9; k++)
+                    {
+                        previousScores[i, j, k].Score = -1;
+                    }
+
+            //place balloon on the ground
+            previousScores[_problem.DepartBallons.R, _problem.DepartBallons.C, 0] = new ScoreAndInstruction
+            {
+                Score = 0,
+                InstructionIdx = -1,
+            };
+
             //reset positions
 	        for (int i = 0; i < 53; i++)
 	        {
@@ -166,8 +154,19 @@ namespace finale
 	        _freeIdx = 0;
 	    }
 
-        private void InitTurnLoop(int t)
+	    private void InitTurnLoop(int t, ScoreAndInstruction[,,] previousScores, ScoreAndInstruction[,,] currentScores)
         {
+            for (int i = 0; i < _problem.NbLines; i++)
+                for (int j = 0; j < _problem.NbCols; j++)
+                    for (int k = 0; k < 9; k++)
+                        currentScores[i, j, k].Score = -1;
+
+            previousScores[_problem.DepartBallons.R, _problem.DepartBallons.C, 0] = new ScoreAndInstruction
+            {
+                Score = 0,
+                InstructionIdx = -1,
+            };
+
             //reset score cache
             _scoresCache = new int[75, 300];
 
@@ -242,9 +241,11 @@ namespace finale
 	            for (int c = 0; c < 300; c++)
 	            {
 	                for (int a = 1; a < 9; a++)
-	                {
-	                    if (scores[r, c, a].Score > max.Score)
-	                    {
+                    {
+	                    if (scores[r, c, a].Score >= max.Score)
+                        {
+                            if (scores[r, c, a].Score == max.Score && Helper.rand.NextDouble() < 0.5)
+                                continue; //choose new equivalent solution with 1/2 probability. I know, it's biased towards the last maxes encountered.
 	                        max = scores[r, c, a];
 	                    }
 	                }
@@ -252,14 +253,14 @@ namespace finale
 	        }
 	        return max.InstructionIdx;
 	    }
-
+        
 	    /// <returns>false if the new location is outside of the map</returns>
         private bool ApplyWind(int r, int c, int a, out short newR, out short newC)
         {
-            var wind = _problem.Winds[r, c, a];
-            newC = (short) ((300 + c + wind.C)%300);
-            newR = (short) (r + wind.R);
-            return newR >= 0 && newR < 75;
+            var nextPosition = _problem.Winds[r, c, a];
+            newR = nextPosition.R;
+            newC = nextPosition.C;
+            return newR >= 0;
         }
     }
 }
