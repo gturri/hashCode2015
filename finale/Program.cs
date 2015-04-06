@@ -6,35 +6,41 @@ namespace finale
 {
 	class MainClass
 	{
-		public static Random rand = new Random ();
 
         [STAThread]
 		public static void Main (string[] args)
 		{
             var problem = Parser.Parse("../../final_round.in");
 
-            var startingSolution = new Solution(problem);
-            if (args.Length > 0)
-            {
-                var startingSolutionFile = args[0];
-                using (var reader = new StreamReader(startingSolutionFile))
-                {
-                    int turn = 0;
-                    string line;
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        var moves = line.Split(new[]{' '}, StringSplitOptions.RemoveEmptyEntries);
-                        for (int b = 0; b < moves.Length; b++)
-                        {
-                            startingSolution.Moves[turn, b] = Int32.Parse(moves[b]);
-                        }
-                        turn++;
-                    }
-                }
-            }
+            string startingFile = null;
 
-			var solver = new DynaSolver(problem, startingSolution);
+            var startingSolution = ReadStartingSolution(startingFile, problem);
+
+            var solver = new DynaSolver(problem, startingSolution);
 			solver.Solve();
 		}
+
+        private static Solution ReadStartingSolution(string solutionFile, Problem problem)
+	    {
+	        var startingSolution = new Solution(problem);
+	        if (solutionFile != null)
+	        {
+	            using (var reader = new StreamReader(solutionFile))
+	            {
+	                int turn = 0;
+	                string line;
+	                while ((line = reader.ReadLine()) != null)
+	                {
+	                    var moves = line.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
+	                    for (int b = 0; b < moves.Length; b++)
+	                    {
+	                        startingSolution.Moves[turn, b] = Int32.Parse(moves[b]);
+	                    }
+	                    turn++;
+	                }
+	            }
+	        }
+	        return startingSolution;
+	    }
 	}
 }

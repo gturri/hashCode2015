@@ -5,6 +5,8 @@ namespace finale
 {
     static class Helper
     {
+        public static Random rand = new Random();
+
         public static int NbCovered(byte[,] covered)
         {
             int n = 0;
@@ -20,7 +22,7 @@ namespace finale
 		public static void Shuffle(Solution s)
 		{
 			for (int b = 0; b < 52; b++)
-				SwapLines (s, b, MainClass.rand.Next (b + 1, 53));
+				SwapLines (s, b, rand.Next (b + 1, 53));
 		}
 
 		private static void SwapLines(Solution s, int b1, int b2)
