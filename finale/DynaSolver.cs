@@ -65,7 +65,7 @@ namespace finale
 					if (stuckness == 53)
 					{
 						Console.WriteLine ("all balloons are on a stable state");
-						return; //TODO introduce smart perturbation
+						return;
 					}
 				}
 

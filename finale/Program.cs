@@ -33,10 +33,13 @@ namespace finale
 	                startingFile = args[0];
 	        }
 	        var startingSolution = ReadStartingSolution(startingFile, problem);
-            ApplyPerturbation(startingSolution, perturbator);
 
 	        var solver = new DynaSolver(problem, startingSolution);
-			solver.Solve();
+	        while (true) //TODO don't reuse last stabilized solution if it's worse
+	        {
+                ApplyPerturbation(startingSolution, perturbator);
+                solver.Solve();
+	        }
 		}
 
         private static Solution ReadStartingSolution(string solutionFile, Problem problem)
