@@ -34,12 +34,13 @@ namespace finale
             _solution = startingSolution;
 		}
 
-		public void Solve()
+		public int Solve(int initialScore)
 		{
 		    var sw = Stopwatch.StartNew();
 
-			int max = Scorer.Score(_solution);
+			int max = initialScore;
 			int stuckness = 0;
+		    int lastImprovement = 0;
 
 		    for (int b = 0; ; b = (b+1)%53)
             {
@@ -51,13 +52,18 @@ namespace finale
                 ComputeSolutionForBalloon(b);
 
                 var score = Scorer.Score(_solution);
-				var improvement = score - max;
-				Console.WriteLine ("improvement : +" + improvement);
+				var improvement = score - initialScore;
+				Console.WriteLine ("improvement : " + improvement);
                 if (score > max)
                 {
                     Dumper.Dump(_solution, score + ".txt");
                     max = score;
-					stuckness = 0;
+                }
+
+                if (improvement != lastImprovement)
+                {
+                    lastImprovement = improvement;
+                    stuckness = 0;
                 }
 				else
 				{
@@ -65,7 +71,7 @@ namespace finale
 					if (stuckness == 53)
 					{
 						Console.WriteLine ("all balloons are on a stable state");
-						return;
+						return max;
 					}
 				}
 

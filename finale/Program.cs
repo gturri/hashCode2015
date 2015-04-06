@@ -33,12 +33,23 @@ namespace finale
 	                startingFile = args[0];
 	        }
 	        var startingSolution = ReadStartingSolution(startingFile, problem);
+	        var bestSolution = startingSolution.Clone();
 
+            int initialScore = Scorer.Score(startingSolution);
 	        var solver = new DynaSolver(problem, startingSolution);
-	        while (true) //TODO don't reuse last stabilized solution if it's worse
+	        while (true)
 	        {
                 ApplyPerturbation(startingSolution, perturbator);
-                solver.Solve();
+                var stabilizedScore = solver.Solve(initialScore);
+	            if (stabilizedScore > initialScore)
+	            {
+	                initialScore = stabilizedScore;
+	                bestSolution = startingSolution.Clone();
+	            }
+	            else
+	            {
+	                startingSolution = (Solution) bestSolution;
+	            }
 	        }
 		}
 

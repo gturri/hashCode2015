@@ -4,7 +4,7 @@ using System.Text;
 
 namespace finale
 {
-	public class Solution
+	public class Solution : ICloneable
 	{
         /// <summary> first index is turn, second is balloon </summary>
 		public int[,] Moves = new int[400, 53];
@@ -40,5 +40,13 @@ namespace finale
             }
             return sb.ToString();
         }
+
+	    public object Clone()
+	    {
+	        return new Solution(problem)
+	            {
+	                Moves = (int[,]) Moves.Clone()
+	            };
+	    }
 	}
 }
