@@ -9,7 +9,8 @@ namespace finale
         None, //just optimize from the starting file
         RandomStart, //start by taking a random solution, and improve on it
         Merge, //take balloons from 2 good solutions, and improve the frankensteined solution
-        EraseN, //remove N balloons from an existing good solution and re-route them
+        Balloons, //remove N balloons from an existing good solution and re-route them
+        Turns, //remove N last turns from an existing good solution and re-route balloons
     }
 
 	class MainClass
@@ -20,12 +21,10 @@ namespace finale
             var problem = Parser.Parse("../../final_round.in");
 
             string startingFile = null;
-	        var perturbator = Perturbator.None;
 	        if (args.Length > 0)
 	        {
 	            if (args[0].StartsWith("-"))
 	            {
-	                perturbator = (Perturbator) Enum.Parse(typeof (Perturbator), args[0].Substring(1));
 	                if (args.Length > 1)
 	                    startingFile = args[1];
 	            }
@@ -33,13 +32,14 @@ namespace finale
 	                startingFile = args[0];
 	        }
 	        var startingSolution = ReadStartingSolution(startingFile, problem);
+
 	        var bestSolution = startingSolution.Clone();
 
             int initialScore = Scorer.Score(startingSolution);
 	        var solver = new DynaSolver(problem, startingSolution);
 	        while (true)
 	        {
-                ApplyPerturbation(startingSolution, perturbator);
+                //ApplyPerturbation(startingSolution, Helper.rand.NextDouble() < 0.5 ? Perturbator.Balloons : Perturbator.Turns);
                 var stabilizedScore = solver.Solve(initialScore);
 	            if (stabilizedScore > initialScore)
 	            {
@@ -55,7 +55,7 @@ namespace finale
 
         private static Solution ReadStartingSolution(string solutionFile, Problem problem)
 	    {
-	        var startingSolution = new Solution(problem);
+	        var startingSolution = new Solution(problem);//Helper.GetRandom(problem);
 	        if (solutionFile != null)
 	        {
 	            using (var reader = new StreamReader(solutionFile))
@@ -87,11 +87,26 @@ namespace finale
                 case Perturbator.Merge:
                     //TODO : be able to automatically chose 2 solutions that are not from the same branch
                     break;
-                case Perturbator.EraseN:
+                case Perturbator.Balloons:
+                    int nbBalloons = Helper.rand.Next(1, 5);
                     for (int t = 0; t < 400; t++)
+                        for (int b = 1; b < nbBalloons; b++)
+                            s.Moves[t, b] = 0;
+                    Console.WriteLine("removed {0} balloons", nbBalloons+1);
+                    break;
+                case Perturbator.Turns:
+                    int nbTurns = Helper.rand.Next(1, 6);
+                    for (int t = 399; t >= nbTurns; t--)
+                        for (int b = 0; b < 53; b++)
+                            s.Moves[t, b] = s.Moves[t-nbTurns, b];
+                    for (int b = 0; b < 53; b++)
                     {
-                        s.Moves[t, 1] = 0;
+                        for (int t = 0; t < nbTurns; t++)
+                        {
+                            s.Moves[t, b] = 0;
+                        }
                     }
+                    Console.WriteLine("removed {0} turns", nbTurns);
                     break;
             }
         }

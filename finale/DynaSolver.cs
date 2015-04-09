@@ -38,47 +38,46 @@ namespace finale
 		{
 		    var sw = Stopwatch.StartNew();
 
-			int max = initialScore;
+			int max = 690000;
 			int stuckness = 0;
 		    int lastImprovement = 0;
 
-		    for (int b = 0; ; b = (b+1)%53)
-            {
-                //clean solution for current balloon if any
-                for (int t = 0; t < 400; t++)
-                    _solution.Moves[t, b] = 0;
+            for (int b = 0; ; b = (b + 1) % 53)
+		    {
+		        //clean solution for current balloon if any
+		        for (int t = 0; t < 400; t++)
+		            _solution.Moves[t, b] = 0;
 
-                Console.WriteLine(b);
-                ComputeSolutionForBalloon(b);
+		        Console.Write(b);
+		        ComputeSolutionForBalloon(b);
 
-                var score = Scorer.Score(_solution);
-				var improvement = score - initialScore;
-				Console.WriteLine ("improvement : " + improvement);
-                if (score > max)
-                {
-                    Dumper.Dump(_solution, score + ".txt");
-                    max = score;
-                }
+		        var score = Scorer.Score(_solution);
+		        var improvement = score - initialScore;
+		        Console.WriteLine(", improvement : " + improvement);
+		        if (score > max)
+		        {
+		            Dumper.Dump(_solution, score + ".txt");
+		            max = score;
+		        }
 
-                if (improvement != lastImprovement)
-                {
-                    lastImprovement = improvement;
-                    stuckness = 0;
-                }
-				else
-				{
-					stuckness++;
-					if (stuckness == 53)
-					{
-						Console.WriteLine ("all balloons are on a stable state");
-						return max;
-					}
-				}
+		        if (improvement != lastImprovement)
+		        {
+		            lastImprovement = improvement;
+		            stuckness = 0;
+		        }
+		        else
+		        {
+		            stuckness++;
+		            if (stuckness == 53)
+		            {
+		                Console.WriteLine("all balloons are on a stable state");
+		                return max;
+		            }
+		        }
 
-                Console.WriteLine(score);
-                Console.WriteLine("(" + sw.Elapsed + ")");
-                sw.Restart();
-            }
+		        Console.WriteLine("(" + sw.ElapsedMilliseconds + ")");
+		        sw.Restart();
+		    }
 		}
 
 	    private void ComputeSolutionForBalloon(int b)
@@ -111,7 +110,7 @@ namespace finale
 	                            {
 	                                int oldScore = currentScores[newR, newC, a + da].Score;
 	                                int newScore = prevScore.Score + _scoresCache[newR, newC];
-	                                if (newScore > oldScore)
+                                    if (newScore > oldScore || (newScore == oldScore && Helper.rand.NextDouble() < 0.5))
 	                                {
 	                                    currentScores[newR, newC, a + da].Score = newScore;
 	                                    _tree[_freeIdx].Move = da;
@@ -204,6 +203,8 @@ namespace finale
             for (int b = 0; b < 53; b++)
             {
                 var pos = _placedBalloonsPosition[b];
+                if (pos.R < 0)
+                    continue;
                 _placedBalloonsAltitude[b] += _solution.Moves[turn, b];
                 short newR, newC;
                 ApplyWind(pos.R, pos.C, _placedBalloonsAltitude[b], out newR, out newC);
@@ -219,10 +220,11 @@ namespace finale
 	            if (_placedBalloonsAltitude[b] == 0)
 	                continue; //have not left base yet
 
-	            foreach (var loc in _problem.GetListOfTargetReachedFrom(_placedBalloonsPosition[b]))
-	            {
-	                covered[loc.R, loc.C] = 1;
-	            }
+                if (_placedBalloonsPosition[b].R >= 0)
+	                foreach (var loc in _problem.GetListOfTargetReachedFrom(_placedBalloonsPosition[b]))
+	                {
+	                    covered[loc.R, loc.C] = 1;
+	                }
 	        }
 	        return covered;
 	    }
@@ -241,23 +243,27 @@ namespace finale
 
 	    private static int GetBestScore(ScoreAndInstruction[,,] scores)
 	    {
-	        var max = new ScoreAndInstruction();
+            var maxes = new List<ScoreAndInstruction>();
+	        int best = 0;
 	        for (int r = 0; r < 75; r++)
 	        {
 	            for (int c = 0; c < 300; c++)
 	            {
 	                for (int a = 1; a < 9; a++)
                     {
-	                    if (scores[r, c, a].Score >= max.Score)
+	                    if (scores[r, c, a].Score >= best)
                         {
-                            if (scores[r, c, a].Score == max.Score && Helper.rand.NextDouble() < 0.5)
-                                continue; //choose new equivalent solution with 1/2 probability. I know, it's biased towards the last maxes encountered.
-	                        max = scores[r, c, a];
+                            if (scores[r, c, a].Score > best)
+                            {
+                                maxes.Clear();
+                                best = scores[r, c, a].Score;
+                            }
+                            maxes.Add(scores[r, c, a]);
 	                    }
 	                }
 	            }
 	        }
-	        return max.InstructionIdx;
+	        return maxes[Helper.rand.Next(maxes.Count)].InstructionIdx;
 	    }
         
 	    /// <returns>false if the new location is outside of the map</returns>

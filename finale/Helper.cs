@@ -54,5 +54,24 @@ namespace finale
 			else
 				return null;
 		}
+
+        public static Solution GetRandom(Problem p)
+        {
+            var sol = new Solution(p);
+            var alt = new int[53];
+            for (int t = 0; t < 400; t++)
+            {
+                for (int b = 0; b < 53; b++)
+                {
+                    var a = alt[b];
+                    var lower = a > 1 ? -1 : 0;
+                    var upper = a == 8 ? 0 : 1;
+                    var change = rand.Next(lower, upper + 1);
+                    alt[b] += change;
+                    sol.Moves[t, b] = change;
+                }
+            }
+            return sol;
+        }
     }
 }
