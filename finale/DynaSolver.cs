@@ -28,21 +28,24 @@ namespace finale
         private int[,] _scoresCache;
         private byte[,] _alreadyCovered;
 
+	    private int _nbBalloonsToPlace;
+
 	    public DynaSolver (Problem problem, Solution startingSolution)
 		{
             _problem = problem;
             _solution = startingSolution;
 		}
 
-		public int Solve(int initialScore)
+		public int Solve(int initialScore, int nbBalloonsToPlace)
 		{
 		    var sw = Stopwatch.StartNew();
 
-			int max = 690000;
+            _nbBalloonsToPlace = nbBalloonsToPlace;
+            int max = 0;
 			int stuckness = 0;
 		    int lastImprovement = 0;
 
-            for (int b = 0; ; b = (b + 1) % 53)
+		    for (int b = _nbBalloonsToPlace-1; ; b = (b + 1) % _nbBalloonsToPlace)
 		    {
 		        //clean solution for current balloon if any
 		        for (int t = 0; t < 400; t++)
@@ -68,7 +71,7 @@ namespace finale
 		        else
 		        {
 		            stuckness++;
-		            if (stuckness == 53)
+                    if (stuckness == _nbBalloonsToPlace)
 		            {
 		                Console.WriteLine("all balloons are on a stable state");
 		                return max;
@@ -150,7 +153,7 @@ namespace finale
             };
 
             //reset positions
-	        for (int i = 0; i < 53; i++)
+            for (int i = 0; i < _nbBalloonsToPlace; i++)
 	        {
 	            _placedBalloonsPosition[i] = _problem.DepartBallons;
 	            _placedBalloonsAltitude[i] = 0;
@@ -200,7 +203,7 @@ namespace finale
 
 	    private void MoveBalloons(int turn)
         {
-            for (int b = 0; b < 53; b++)
+            for (int b = 0; b < _nbBalloonsToPlace; b++)
             {
                 var pos = _placedBalloonsPosition[b];
                 if (pos.R < 0)
@@ -215,7 +218,7 @@ namespace finale
 	    private byte[,] GetCoveredCells()
 	    {
 	        var covered = new byte[75,300];
-	        for (int b = 0; b < 53; b++)
+            for (int b = 0; b < _nbBalloonsToPlace; b++)
 	        {
 	            if (_placedBalloonsAltitude[b] == 0)
 	                continue; //have not left base yet
